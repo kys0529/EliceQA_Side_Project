@@ -1,0 +1,2 @@
+class TravelProduct:
+    pass
