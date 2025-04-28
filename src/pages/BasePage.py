@@ -69,6 +69,7 @@ class BasePage:
             element = self.wait.until(EC.presence_of_element_located(locator))
             self.logger.info("✔ 요소 존재 확인")
             return element
+        
         except (NoSuchElementException, TimeoutException) as e:
             self.logger.error(f"✖ 요소를 찾지 못하거나 대기 시간 초과: {e}")
             self.driver.save_screenshot(screenshot_file)

@@ -1,8 +1,8 @@
 from selenium.common.exceptions import NoSuchElementException, TimeoutException
 from pages.BasePage import BasePage
 
-from appium.webdriver.common.appiumby import AppiumBy # TODO: 추후 login 요소 정의 후 수정 시 삭제
-#from utils.locators import LoginLocator # TODO: 추후 login 요소 정의 후 수정 시 추가
+from appium.webdriver.common.appiumby import AppiumBy   # TODO: 추후 login 요소 정의 후 수정 시 삭제
+#from utils.locators import LoginLocator                # TODO: 추후 login 요소 정의 후 수정 시 추가
 
 class Helpers(BasePage):
     def __init__(self, driver):
