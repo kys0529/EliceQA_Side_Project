@@ -20,19 +20,19 @@ def make_options():
 
     return options
 
-@pytest.fixture(scope="class")
+@pytest.fixture(scope="function")
 def driver(request):
     # appium 서버 연결
     driver = webdriver.Remote(os.getenv("APPIUM_SERVER_URL"), options=make_options())
 
     # 드라이버를 클래스에 붙여준다
-    request.cls.driver = driver
+    # request.cls.driver = driver
 
     yield driver
 
     driver.quit()
 
-@pytest.fixture(scope="class")
+@pytest.fixture(scope="function")
 def login_driver(request):
     # appium 서버 연결
     driver = webdriver.Remote(os.getenv("APPIUM_SERVER_URL"), options=make_options())
@@ -45,26 +45,26 @@ def login_driver(request):
     helpers.login(login_id, login_pw)
 
     # 드라이버를 클래스에 붙여준다
-    request.cls.driver = driver
+    # request.cls.driver = driver
 
     yield driver
 
     driver.quit()
 
-@pytest.fixture(autouse=True)
-def reset_app(request):
-    driver = request.cls.driver  # 클래스에 붙어있는 드라이버 사용
-    package_name = os.getenv("PACKAGE_NAME")  # .env 파일에서 읽기
+# @pytest.fixture(autouse=True)
+# def reset_app(request):
+#     driver = request.cls.driver  # 클래스에 붙어있는 드라이버 사용
+#     package_name = os.getenv("PACKAGE_NAME")  # .env 파일에서 읽기
 
-    start_time = time.time()
+#     start_time = time.time()
 
-    driver.execute_script('mobile: clearApp', {'appId': package_name})
-    driver.activate_app(package_name)
+#     driver.execute_script('mobile: clearApp', {'appId': package_name})
+#     driver.activate_app(package_name)
 
-    yield
+#     yield
 
-    driver.terminate_app(package_name)
+#     driver.terminate_app(package_name)
 
-    end_time = time.time()
-    duration = end_time - start_time
-    print(f"⌚ 테스트 소요 시간: {duration:.2f}초")
+#     end_time = time.time()
+#     duration = end_time - start_time
+#     print(f"⌚ 테스트 소요 시간: {duration:.2f}초")
