@@ -6,7 +6,7 @@ from appium import webdriver
 from appium.options.common.base import AppiumOptions
 from dotenv import load_dotenv
 
-from src.utils.helpers import Helpers
+from src.utils.helpers import login
 
 load_dotenv(dotenv_path="src/config/.env")
 
@@ -41,8 +41,7 @@ def login_driver(request):
     login_id = os.getenv("LOGIN_ID")
     login_pw = os.getenv("LOGIN_PW")
 
-    helpers = Helpers(driver)
-    helpers.login(login_id, login_pw)
+    login(driver, login_id, login_pw)
 
     # 드라이버를 클래스에 붙여준다
     # request.cls.driver = driver
