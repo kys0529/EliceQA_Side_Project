@@ -67,3 +67,16 @@ class BasePage:
             self.logger.error(f"✖ 요소를 찾지 못하거나 대기 시간 초과: {e}")
             self.save_screenshot("find_element")
             raise
+
+    # 요소 입력
+    def send_keys(self, locator, text):
+        try:
+            element = self.click_element(locator)
+            element.send_keys(text)
+            self.logger.info("✔ 요소 입력 확인")
+            return element
+        
+        except (NoSuchElementException, TimeoutException) as e:
+            self.logger.error(f"✖ 요소를 찾지 못하거나 대기 시간 초과: {e}")
+            self.save_screenshot("send_keys")
+            raise

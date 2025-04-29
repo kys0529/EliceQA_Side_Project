@@ -22,9 +22,9 @@ def login(driver, login_id, login_pw):
 
     driver.hide_keyboard() # 키보드 창이 요소를 가리는 문제 방지
 
+    wait.until(EC.element_to_be_clickable(BTN_LOGIN)).click()
+
     try: # 알림 허용 팝업이 뜨는 경우와 뜨지 않는 경우를 모두 고려하여 예외 처리
         wait.until(EC.element_to_be_clickable(BTN_ALLOW_PUSH)).click()
     except:
         pass
-    
-    wait.until(EC.element_to_be_clickable(BTN_LOGIN)).click()
