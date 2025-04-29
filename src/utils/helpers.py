@@ -9,7 +9,7 @@ class Helpers(BasePage):
         super().__init__(driver, page_name)
 
     def login(self, login_id, login_pw):
-        screenshot_file = self.setup_screenshot("login")
+        screenshot_file = self.save_screenshot("login")
 
         # TODO: login 요소 하드코딩 -> 추후 login 요소 정의 후 수정 필요
         INPUT_ID = (AppiumBy.XPATH, "//android.widget.EditText[1]")
