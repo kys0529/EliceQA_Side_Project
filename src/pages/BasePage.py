@@ -78,5 +78,5 @@ class BasePage:
         
         except (NoSuchElementException, TimeoutException) as e:
             self.logger.error(f"✖ 요소를 찾지 못하거나 대기 시간 초과: {e}")
-            self.save_screenshot("send_element")
+            self.save_screenshot("send_keys")
             raise
