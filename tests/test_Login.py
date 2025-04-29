@@ -1,29 +1,18 @@
-#from src.pages.Login import Login
+from src.pages.Login import Login
 import pytest
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from appium.webdriver.common.appiumby import AppiumBy
 
 import time
-@pytest.mark.usefixtures("login_driver")
-class TestLR01:
-    def test_lr_01_01(self, driver): # 기능/의도 설명
-        print("login")
-        #login = Login() # 클래스에 대한 객체의 변수명은 첫 문자를 소문자로!
-        # locator = 'android.widget.EditText'
-        # wait = WebDriverWait(driver,10)
-        # element = wait.until(EC.presence_of_element_located((AppiumBy.CLASS_NAME, locator)))
-        # element.click()
-        # element.send_keys("test")
-        # assert element.text == "test", "입력이 안됨 ㅠㅠ"
+@pytest.mark.usefixtures("driver")
+@pytest.mark.skip("아직 작성계획 없음")
+class TestLR02:
+    def test_lr_02_01(self, driver, request): # 기능/의도 설명
+        login = Login(driver)
+
+        login.logger.info("로그인 페이지 접속")
+        login.save_screenshot(request.node.name)
+
     def test_lr_01_02(self, driver): 
         print("login_2")
-        # locator = 'android.widget.ImageView'
-        # wait = WebDriverWait(driver,10)
-        # element = wait.until(EC.presence_of_element_located((AppiumBy.CLASS_NAME, locator)))
-        # assert element.is_displayed(), "안보여용"
-
-'''
-임시로 만든용도입니다!
-아직 POM 적용되지 않은 테스트용 코드
-'''
