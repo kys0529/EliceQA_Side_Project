@@ -48,24 +48,24 @@ class BasePage:
         try:
             element = self.wait.until(EC.element_to_be_clickable(locator))
             element.click()
-            self.logger.info("✔ 요소 클릭 확인")
+            self.logger.info(f"✔ {locator} 요소 클릭 확인")
             return element
         
         except (NoSuchElementException, TimeoutException) as e:
-            self.logger.error(f"✖ 요소를 찾지 못하거나 대기 시간 초과: {e}")
-            self.save_screenshot("click_element")
+            self.logger.error(f"✖ {locator} 요소를 찾지 못하거나 대기 시간 초과: {e}")
+            self.save_screenshot("click_element_fail")
             raise
 
     # 요소 존재 확인 (화면에 존재할 때까지 대기)
     def find_element(self, locator):
         try:
             element = self.wait.until(EC.presence_of_element_located(locator))
-            self.logger.info("✔ 요소 존재 확인")
+            self.logger.info(f"✔ {locator} 요소 존재 확인")
             return element
         
         except (NoSuchElementException, TimeoutException) as e:
-            self.logger.error(f"✖ 요소를 찾지 못하거나 대기 시간 초과: {e}")
-            self.save_screenshot("find_element")
+            self.logger.error(f"✖ {locator} 요소를 찾지 못하거나 대기 시간 초과: {e}")
+            self.save_screenshot("find_element_fail")
             raise
 
     # 요소 입력
@@ -73,10 +73,10 @@ class BasePage:
         try:
             element = self.click_element(locator)
             element.send_keys(text)
-            self.logger.info("✔ 요소 입력 확인")
+            self.logger.info(f"✔ {locator} 요소 입력 확인")
             return element
         
         except (NoSuchElementException, TimeoutException) as e:
-            self.logger.error(f"✖ 요소를 찾지 못하거나 대기 시간 초과: {e}")
-            self.save_screenshot("send_keys")
+            self.logger.error(f"✖ {locator} 요소를 찾지 못하거나 대기 시간 초과: {e}")
+            self.save_screenshot("send_keys_fail")
             raise
