@@ -13,7 +13,6 @@ class BasePage:
         self.page_name = page_name
         self.logger = self.setup_logger()
 
-
     # Logger 설정
     def setup_logger(self):
         log_dir = f"reports/logs/{self.page_name}"
@@ -35,21 +34,17 @@ class BasePage:
 
         return logger
 
-
-    # 스크린샷 설정
-    def setup_screenshot(self, func_name):
+    # 스크린샷 촬영
+    def save_screenshot(self, func_name):
         screenshot_dir = f"reports/screenshots/{self.page_name}"
         os.makedirs(screenshot_dir, exist_ok=True)
-
+    
         timestamp = time.strftime("%Y-%m-%d_%H-%M-%S")
         screenshot_file = os.path.join(screenshot_dir, f"{timestamp}_{func_name}.png")
-
-        return screenshot_file
-
+        self.driver.save_screenshot(screenshot_file)
 
     # 요소 클릭 (클릭 가능할 때까지 대기 후 클릭)
     def click_element(self, locator):
-        screenshot_file = self.setup_screenshot("click_element")
         try:
             element = self.wait.until(EC.element_to_be_clickable(locator))
             element.click()
@@ -58,13 +53,11 @@ class BasePage:
         
         except (NoSuchElementException, TimeoutException) as e:
             self.logger.error(f"✖ 요소를 찾지 못하거나 대기 시간 초과: {e}")
-            self.driver.save_screenshot(screenshot_file)
+            self.save_screenshot("click_element")
             raise
-
 
     # 요소 존재 확인 (화면에 존재할 때까지 대기)
     def find_element(self, locator):
-        screenshot_file = self.setup_screenshot("find_element")
         try:
             element = self.wait.until(EC.presence_of_element_located(locator))
             self.logger.info("✔ 요소 존재 확인")
@@ -72,5 +65,5 @@ class BasePage:
         
         except (NoSuchElementException, TimeoutException) as e:
             self.logger.error(f"✖ 요소를 찾지 못하거나 대기 시간 초과: {e}")
-            self.driver.save_screenshot(screenshot_file)
+            self.save_screenshot("find_element")
             raise
