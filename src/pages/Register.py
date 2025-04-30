@@ -25,6 +25,14 @@ class Register(BasePage):
             self.save_screenshot("failed_to_navigate_to_register")            
 
     def handle_exception(self, request, e):
-        self.logger.info(f"테스트 실패")
+        self.logger.error(f"테스트 실패")
         self.save_screenshot(request.node.name)
         assert False, "테스트 실패"
+
+    def hide_keyboard(self):
+        try:
+            self.driver.hide_keyboard()
+            self.logger.info("키보드 숨김")
+        except Exception as e:
+            self.logger.error(f"키보드 숨기기 실패: {e}")
+            self.save_screenshot("hide_keyboard_fail")
