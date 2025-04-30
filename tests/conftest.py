@@ -6,7 +6,7 @@ from appium import webdriver
 from appium.options.common.base import AppiumOptions
 from dotenv import load_dotenv
 
-from src.utils.helpers import Helpers
+from src.utils.helpers import login
 
 load_dotenv(dotenv_path="src/config/.env")
 
@@ -32,7 +32,7 @@ def login_driver(driver):
     # 로그인 처리
     login_id = os.getenv("LOGIN_ID")
     login_pw = os.getenv("LOGIN_PW")
-    login(login_id, login_pw)
+    login(driver, login_id, login_pw)
     yield driver
 
 @pytest.fixture(autouse=True)
