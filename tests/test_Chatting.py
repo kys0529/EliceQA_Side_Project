@@ -8,7 +8,7 @@ from utils.locators import ChattingLocator
 @pytest.mark.usefixtures("login_driver")
 class TestTP01:
     @pytest.mark.skip()
-    def test_tp_01_01(self, login_driver: WebDriver, request): # 채팅 탭 진입
+    def test_tp_01_01(self, login_driver: WebDriver, request): # 채팅 탭 진입 확인
 
         chatting = Chatting(login_driver)
         chatting.into_chatting_tap()
