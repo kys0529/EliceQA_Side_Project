@@ -1,24 +1,33 @@
 from appium.webdriver.common.appiumby import AppiumBy
 
-# 채팅 탭
-CHATTING_TAB_ICON = (AppiumBy.XPATH, '//android.widget.Button[@content-desc="1\n채팅\n탭 4개 중 3번째"]') # 채팅 탭 아이콘
-CHATTING_TAB_TITLE = (AppiumBy.ACCESSIBILITY_ID, '채팅 목록') # 타이틀
-SEARCH_INPUT_CHAT = (AppiumBy.XPATH, '//android.widget.EditText[@hint="검색"]') # 채팅 검색창
-SEARCH_BTN_CHAT = (AppiumBy.XPATH, '//android.widget.FrameLayout[@resource-id="android:id/content"]/android.widget.FrameLayout/android.view.View/android.view.View/android.view.View/android.view.View[1]/android.widget.Button') # 사용자 검색창
+
+class ChattingTabLocator: # 채팅 탭 관련
+  ICON = (AppiumBy.ACCESSIBILITY_ID, '채팅\n탭 4개 중 3번째') # 채팅 탭 아이콘
+  TITLE = (AppiumBy.ACCESSIBILITY_ID, '채팅 목록') # 타이틀
+  SEARCH_INPUT = (AppiumBy.XPATH, '//android.widget.EditText[@hint="검색"]') # 채팅방 검색창
+  SEARCH_BTN = (AppiumBy.XPATH, '//android.widget.FrameLayout[@resource-id="android:id/content"]/android.widget.FrameLayout/android.view.View/android.view.View/android.view.View/android.view.View[1]/android.widget.Button') # 검색 버튼
 
 
-# 채팅방 사용자 프로필
-CHAT_ROOM = (AppiumBy.ACCESSIBILITY_ID, '사용자 B\n마지막') # 채팅방 진입
+class ChatRoomLocator: # 채팅방 관련
+  @staticmethod
+  def chat_room_profile(user_name: str): # 채팅방 진입
+    return (AppiumBy.XPATH, f'//android.widget.Button[contains(@content-desc, "{user_name}")]')
 
-# 채팅방 사용자 프로필은 우선 건너뛰기
+  @staticmethod
+  def chat_room_title(user_name: str):
+    return (AppiumBy.XPATH, f'//android.view.View[contains(@content-desc, "{user_name} 님과의 대화")]')
+
+  #채팅방 UI 요소
+  BACK_BTN = (AppiumBy.ACCESSIBILITY_ID, '뒤로') # 뒤로가기 버튼
+  PLUS_BTN = (AppiumBy.XPATH, '//android.widget.FrameLayout[@resource-id="android:id/content"]/android.widget.FrameLayout/android.view.View/android.view.View/android.view.View/android.widget.Button[1]') # + 버튼
+  MESSAGE_INPUT = (AppiumBy.XPATH, '//android.widget.EditText[@hint="메시지를 입력하세요..."]') # 메세지 입력창
+  MESSAGE_SEND_BTN = (AppiumBy.XPATH, '//android.widget.FrameLayout[@resource-id="android:id/content"]/android.widget.FrameLayout/android.view.View/android.view.View/android.view.View/android.widget.Button[2]') # 메세지 보내기 버튼
+
+  UI_CHECK_LOCS = [BACK_BTN, PLUS_BTN, MESSAGE_INPUT, MESSAGE_SEND_BTN] 
 
 
-#채팅방 UI 요소
-BACK_BTN_CHAT = (AppiumBy.ACCESSIBILITY_ID, '뒤로') # 뒤로가기 버튼
-CHAT_ROOM_TITLE = (AppiumBy.ACCESSIBILITY_ID, '사용자 B 님과의 대화') # 타이틀
-PLUS_BTN = (AppiumBy.XPATH, '//android.widget.FrameLayout[@resource-id="android:id/content"]/android.widget.FrameLayout/android.view.View/android.view.View/android.view.View/android.widget.Button[1]') # + 버튼
-MESSAGE_INPUT = (AppiumBy.XPATH, '//android.widget.EditText[@hint="메시지를 입력하세요..."]') # 메세지 입력창
-MESSAGE_SEND_BTN = (AppiumBy.XPATH, '//android.widget.FrameLayout[@resource-id="android:id/content"]/android.widget.FrameLayout/android.view.View/android.view.View/android.view.View/android.widget.Button[2]') # 메세지 보내기 버튼
+
+
 
 
 # 채팅방 나가기
