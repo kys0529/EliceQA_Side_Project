@@ -32,8 +32,7 @@ def login_driver(driver):
     # 로그인 처리
     login_id = os.getenv("LOGIN_ID")
     login_pw = os.getenv("LOGIN_PW")
-    helpers = Helpers(driver)
-    helpers.login(login_id, login_pw)
+    login(login_id, login_pw)
     yield driver
 
 @pytest.fixture(autouse=True)

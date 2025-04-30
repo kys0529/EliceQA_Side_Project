@@ -16,4 +16,4 @@ class Chatting(BasePage):
 
 
     def into_chatting_tap(self):  # 채팅 탭 진입 함수
-        self.click_element(ChattingLocator.CHATTING_TAB)
+        self.click_element(ChattingLocator.CHATTING_TAB_ICON)
