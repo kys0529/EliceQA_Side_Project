@@ -23,3 +23,8 @@ class Register(BasePage):
         except Exception as e:
             self.logger.error(f"테스트 실패 - find_by_hint")
             self.save_screenshot("failed_to_navigate_to_register")            
+
+    def handle_exception(self, request, e):
+        self.logger.info(f"테스트 실패")
+        self.save_screenshot(request.node.name)
+        assert False, "테스트 실패"
