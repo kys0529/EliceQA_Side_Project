@@ -10,7 +10,7 @@ class ChattingTabLocator: # 채팅 탭 관련
 
 class ChatRoomLocator: # 채팅방 관련
   @staticmethod
-  def chat_room_profile(user_name: str): # 채팅방 진입
+  def chat_room_profile(user_name: str): # 채팅방(프로필 이미지, 사용자이름, 마지막 메시지 노출)
     return (AppiumBy.XPATH, f'//android.widget.Button[contains(@content-desc, "{user_name}")]')
 
   @staticmethod
@@ -20,21 +20,19 @@ class ChatRoomLocator: # 채팅방 관련
   #채팅방 UI 요소
   BACK_BTN = (AppiumBy.ACCESSIBILITY_ID, '뒤로') # 뒤로가기 버튼
   PLUS_BTN = (AppiumBy.XPATH, '//android.widget.FrameLayout[@resource-id="android:id/content"]/android.widget.FrameLayout/android.view.View/android.view.View/android.view.View/android.widget.Button[1]') # + 버튼
-  MESSAGE_INPUT = (AppiumBy.XPATH, '//android.widget.EditText[@hint="메시지를 입력하세요..."]') # 메세지 입력창
+  #MESSAGE_INPUT = (AppiumBy.XPATH, '//android.widget.EditText[@hint="메시지를 입력하세요..."]') # 메세지 입력창
+  MESSAGE_INPUT = (AppiumBy.CLASS_NAME, 'android.widget.EditText') # 메세지 입력창
+
   MESSAGE_SEND_BTN = (AppiumBy.XPATH, '//android.widget.FrameLayout[@resource-id="android:id/content"]/android.widget.FrameLayout/android.view.View/android.view.View/android.view.View/android.widget.Button[2]') # 메세지 보내기 버튼
 
   UI_CHECK_LOCS = [BACK_BTN, PLUS_BTN, MESSAGE_INPUT, MESSAGE_SEND_BTN] 
 
 
-
-
-
-
-# 채팅방 나가기
-EXIT_ALERT = (AppiumBy.XPATH, '//android.view.View[@content-desc="닫기"]/android.view.View/android.view.View') # 나가기 모달창
-EXIT_ALERT_MESSAGE = (AppiumBy.ACCESSIBILITY_ID, '사용자 A님과의 대화방을 나가시겠습니까?') # 모달창 메시지
-EXIT_ALERT_CANCEL_BTN = (AppiumBy.ACCESSIBILITY_ID, '취소') # 취소 버튼
-EXIT_ALERT_EXIT_BTN = (AppiumBy.ACCESSIBILITY_ID, '나가기') # 나가기 버튼
+  # 채팅방 나가기
+  EXIT_ALERT = (AppiumBy.XPATH, '//android.view.View[@content-desc="닫기"]/android.view.View/android.view.View') # 나가기 모달창
+  EXIT_ALERT_MESSAGE = (AppiumBy.ACCESSIBILITY_ID, '사용자 A님과의 대화방을 나가시겠습니까?') # 모달창 메시지
+  EXIT_ALERT_CANCEL_BTN = (AppiumBy.ACCESSIBILITY_ID, '취소') # 취소 버튼
+  EXIT_ALERT_EXIT_BTN = (AppiumBy.ACCESSIBILITY_ID, '나가기') # 나가기 버튼
 
 
 # 갤러리

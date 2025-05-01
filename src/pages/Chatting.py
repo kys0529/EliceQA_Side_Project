@@ -8,6 +8,9 @@ from appium.webdriver.common.appiumby import AppiumBy
 from utils.locators.ChattingLocator import ChattingTabLocator, ChatRoomLocator
 from src.pages.BasePage import BasePage  # 명시적으로 클래스 임포트
 
+from appium.webdriver.common.pointer_input import PointerInput
+from selenium.webdriver.common.actions import ActionBuilder
+
 class Chatting(BasePage):
     def __init__(self, driver, page_name="Chatting"): # page_name 인자 전달
         super().__init__(driver, page_name)
@@ -29,3 +32,28 @@ class Chatting(BasePage):
     def return_to_chat_list(self, user_name): #채팅방 뒤로가기 터치-> 채팅 목록
         self.go_to_chat_room(user_name)
         self.click_element(self.c_room_locs.BACK_BTN)
+
+
+    def swipe_left(self, element):
+        rect = element.rect
+
+        # 스와이프 시작점: 오른쪽 끝 -10, 끝점: 왼쪽 끝 +10 (좌 ← 우)
+        start_x = rect['x'] + rect['width'] - 10
+        start_y = rect['y'] + rect['height'] // 2
+        end_x = rect['x'] + 10
+        end_y = start_y
+
+        # 손가락 포인터 정의
+        finger = PointerInput(interaction.POINTER_TOUCH, "finger")
+        actions = ActionBuilder(self.driver)
+        actions.add_action(finger)
+
+        # 제스처 정의
+        finger.create_pointer_move(duration=0, x=start_x, y=start_y, origin='viewport')
+        finger.create_pointer_down(button=0)
+        finger.create_pause(100)
+        finger.create_pointer_move(duration=300, x=end_x, y=end_y, origin='viewport')
+        finger.create_pointer_up(button=0)
+
+        # 액션 실행
+        actions.perform()
