@@ -1,4 +1,5 @@
 import re
+import time
 from src.utils.locators.TravelProductLocator import TravelProductListLocator
 from src.pages.BasePage import BasePage
 
@@ -57,7 +58,7 @@ class TravelProduct(BasePage):
         return package_items
 
     # 스크롤하며 모든 패키지 정보를 저장
-    def save_all_packages(self, max_scroll):
+    def save_all_packages(self, max_scroll, return_scroll_count=False):
         scroll_count = 1
         all_packages = []
         while scroll_count < max_scroll:
@@ -65,6 +66,13 @@ class TravelProduct(BasePage):
             all_packages.extend(current_packages)     
             self.scroll_down()
             scroll_count += 1
+        if return_scroll_count:
+            return all_packages, scroll_count
+        return all_packages
+    
+    # 스크롤하며 모든 패키지 정보를 저장 후 다시 상단으로 이동
+    def save_all_packages_back_top(self, max_scroll):
+        all_packages, scroll_count = self.save_all_packages(max_scroll, return_scroll_count=True)
         while scroll_count > 1:
             self.scroll_up()
             scroll_count -= 1
@@ -118,7 +126,7 @@ class TravelProduct(BasePage):
     
     # 첫 번째 패키지의 찜 개수 확인
     def get_wishlist_count(self):
-        return int(self.find_element(self.page_locator.PACKAGE_IMAGES).get_attribute("content-desc")[-1])
+        return int(self.get_attribute(self.page_locator.PACKAGE_IMAGES, "content-desc")[-1])
 
     # 여행 패키지 찜 선택 확인
     def toggle_wishlist_button(self):
@@ -126,6 +134,7 @@ class TravelProduct(BasePage):
         package = self.find_element(self.page_locator.PACKAGE_IMAGES) 
         wish_btn = package.find_element(*self.page_locator.WISHLIST_BUTTON)
         wish_btn.click()
+        time.sleep(0.5)   # 찜 클릭 후 개수 변경을 위한 대기
         after = self.get_wishlist_count()
         return before, after
     
@@ -134,4 +143,3 @@ class TravelProduct(BasePage):
         before = self.get_visible_packages()
         after = self.save_all_packages(3)
         return before, after
-
