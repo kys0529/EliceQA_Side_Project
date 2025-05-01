@@ -86,6 +86,7 @@ class BasePage:
         try:
             element = self.find_element(locator)
             value = element.get_attribute(attribute)
+            value = value.replace("\n", "")
             self.logger.info(f"✔ {locator} 요소의 {attribute} 속성 값 확인: {value}")
             return value
         
