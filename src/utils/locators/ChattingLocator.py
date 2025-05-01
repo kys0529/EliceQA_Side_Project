@@ -61,8 +61,17 @@ class BottomSheetLocators: # 바텀시트 관련 로케이터
   USER_TITLE = (AppiumBy.ACCESSIBILITY_ID, '사용자 검색') # 사용자 검색 타이틀
   SEARCH_INPUT_USER = (AppiumBy.XPATH, '//android.widget.EditText[@hint="검색"]') # 사용자 검색창
   SEARCH_BTN_USER = (AppiumBy.XPATH, '//android.widget.FrameLayout[@resource-id="android:id/content"]/android.widget.FrameLayout/android.view.View/android.view.View/android.view.View/android.widget.Button') # 사용자 검색 버튼
-  USER_PROFILE_CARD = (AppiumBy.ACCESSIBILITY_ID, '사용자 A\ntrouffeubavilleu-2112@yopmail.com') # 사용자 카드 재사용가능할지 체크
-  PROFILE_SHARE_BTN = (AppiumBy.XPATH, '//android.view.View[@content-desc="사용자 A trouffeubavilleu-2112@yopmail.com"]/android.widget.Button') #프로필 공유 버튼 재사용 가능한지 체크
+
+  USER_UI_LOCS = [BACK_BTN_USER, USER_TITLE, SEARCH_INPUT_USER, SEARCH_BTN_USER]
+
+  @staticmethod
+  def search_user_profile(user_name: str, email: str):
+    return (AppiumBy.ACCESSIBILITY_ID, f'"{user_name}\n{email}")]')
+  
+  @staticmethod
+  def search_user_profile_share_btn(user_name: str, email: str):
+    return (AppiumBy.XPATH, f'"//android.view.View[@content-desc="{user_name} {email}"]/android.widget.Button")]')
+  
   PROFILE_SHARE_ALERT = (AppiumBy.XPATH, '//android.view.View[@content-desc="닫기"]/android.view.View/android.view.View') # 공유하기 모달창
   SHARE_ALERT_TITLE = (AppiumBy.ACCESSIBILITY_ID, '공유하기') # 공유하기 모달창 타이틀
   SHARE_ALERT_PROFILE_PREVIEW = (AppiumBy.XPATH, '//android.view.View[@content-desc="닫기"]/android.view.View/android.view.View/android.view.View[2]') # 프로필 미리보기 모달창
@@ -71,9 +80,11 @@ class BottomSheetLocators: # 바텀시트 관련 로케이터
 
   #사용자-채팅방
   PROFILE_DM_BTN = (AppiumBy.ACCESSIBILITY_ID, '1:1 채팅') # 1:1 채팅 버튼
-  DM_ROOM_TITLE = (AppiumBy.ACCESSIBILITY_ID, '사용자 B 님과의 대화') # 타이틀 재사용 체크필요
   VIEW_PROFILE_BTN = (AppiumBy.ACCESSIBILITY_ID, '프로필 보기') # 프로필 보기 버튼
-  VIEW_PROFILE_TITLE = (AppiumBy.ACCESSIBILITY_ID, '사용자 A 님의 프로필') # 타이틀 재사용 체크필요
+
+  @staticmethod
+  def view_profile_title(user_name: str):
+    return (AppiumBy.ACCESSIBILITY_ID, f'{user_name} 님의 프로필')
 
 
   # 패키지

@@ -22,30 +22,61 @@ class Chatting(BasePage):
         self.bottom_locs = BottomSheetLocators
 
 
-    def go_to_chatting_tap(self):  # 채팅 탭 진입
+    def go_to_chatting_tap(self):
+        """채팅 탭 진입"""
         self.click_element(self.tab_locs.ICON)
 
 
-    def go_to_chat_room(self, user_name): # 채팅 방 진입
+    def go_to_chat_room(self, user_name): 
+        """채팅 방 진입"""
         self.go_to_chatting_tap()
         self.click_element(self.c_room_locs.chat_room_profile(user_name))
 
 
-    def return_to_chat_list(self, user_name): #채팅방 뒤로가기 터치-> 채팅 목록
+    def return_to_chat_list(self, user_name):
+        """채팅방 뒤로가기 터치-> 채팅 목록"""
         self.go_to_chat_room(user_name)
         self.click_element(self.c_room_locs.BACK_BTN)
 
 
     def tap_plus_button(self, user_name):
+        """채팅방 하단 + 버튼 터치"""
         self.go_to_chat_room(user_name)
         self.click_element(self.c_room_locs.PLUS_BTN)
 
 
-    def tap_gallery_icon(self, user_name):
+    def tap_bottom_icon(self, user_name, icon_locator):
+        """+ 버튼 바텀시트 아이콘 터치"""
         self.tap_plus_button(user_name)
-        self.click_element(self.bottom_locs.GALLERY_ICON)
+        self.click_element(icon_locator)
 
 
+    def take_and_send_photo_with_retry(self):
+        """카메라로 사진을 촬영하고, 재촬영 후 전송"""
+        self.click_element(self.bottom_locs.TAKE_PHOTO_BTN)  # 첫 촬영
+        self.click_element(self.bottom_locs.TAKE_PHOTO_RETRY_BTN)  # 다시시도 버튼
+        self.click_element(self.bottom_locs.TAKE_PHOTO_BTN)  # 재촬영
+        self.click_element(self.bottom_locs.TAKE_PHOTO_CONFIRM_BTN)  # 확인 버튼
+
+
+    def image_alert_yes_tap(self):
+        """사진 보내기 모달창에서 '예' 터치"""
+        self.find_element(self.bottom_locs.IMAGE_ALERT) # 모달창 확인
+        self.find_element(self.bottom_locs.IMAGE_ALERT_TITLE) # 사진보내기 타이틀 확인
+        self.click_element(self.bottom_locs.IMAGE_ALERT_YES_BTN) # 예 버튼 터치
+
+
+    def image_alert_no_tap(self):
+        """사진 보내기 모달창에서 '아니오' 터치"""
+        self.find_element(self.bottom_locs.IMAGE_ALERT)
+        self.find_element(self.bottom_locs.IMAGE_ALERT_TITLE)
+        self.click_element(self.bottom_locs.IMAGE_ALERT_NO_BTN) # 아니오 버튼 터치
+
+
+    def search_user_profile_card(self, user_name, icon_locator, btn_locator):
+        self.tap_bottom_icon(user_name, icon_locator)
+        self.send_keys(user_name)
+        self.click_element(btn_locator)
 
 
 
