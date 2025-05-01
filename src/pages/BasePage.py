@@ -80,3 +80,33 @@ class BasePage:
             self.logger.error(f"✖ {locator} 요소를 찾지 못하거나 대기 시간 초과: {e}")
             self.save_screenshot("send_keys_fail")
             raise
+
+    # 요소 attribute 확인
+    def get_attribute(self, locator, attribute):
+        try:
+            element = self.find_element(locator)
+            value = element.get_attribute(attribute)
+            value = value.replace("\n", "")
+            self.logger.info(f"✔ {locator} 요소의 {attribute} 속성 값 확인: {value}")
+            return value
+        
+        except (NoSuchElementException, TimeoutException) as e:
+            self.logger.error(f"✖ {locator} 요소를 찾지 못하거나 대기 시간 초과: {e}")
+            self.save_screenshot("get_attribute_fail")
+            raise
+    
+    # 스크롤 업
+    def scroll_up(self):
+        size = self.driver.get_window_size()
+        start_y = size["height"] * 0.2
+        end_y = size["height"] * 0.8
+        x = size["width"] * 0.5
+        self.driver.swipe(start_x=x, start_y=start_y, end_x=x, end_y=end_y, duration=800)
+    
+    # 스크롤 다운
+    def scroll_down(self):
+        size = self.driver.get_window_size()
+        start_y = size["height"] * 0.8
+        end_y = size["height"] * 0.2
+        x = size["width"] * 0.5
+        self.driver.swipe(start_x=x, start_y=start_y, end_x=x, end_y=end_y, duration=800)
