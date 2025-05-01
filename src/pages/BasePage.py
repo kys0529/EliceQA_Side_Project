@@ -80,6 +80,19 @@ class BasePage:
             self.logger.error(f"✖ {locator} 요소를 찾지 못하거나 대기 시간 초과: {e}")
             self.save_screenshot("send_keys_fail")
             raise
+
+    # 요소 attribute 확인
+    def get_attribute(self, locator, attribute):
+        try:
+            element = self.find_element(locator)
+            value = element.get_attribute(attribute)
+            self.logger.info(f"✔ {locator} 요소의 {attribute} 속성 값 확인: {value}")
+            return value
+        
+        except (NoSuchElementException, TimeoutException) as e:
+            self.logger.error(f"✖ {locator} 요소를 찾지 못하거나 대기 시간 초과: {e}")
+            self.save_screenshot("get_attribute_fail")
+            raise
     
     # 스크롤 업
     def scroll_up(self):
