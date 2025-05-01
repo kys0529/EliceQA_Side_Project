@@ -2,7 +2,7 @@ import pytest
 from appium.webdriver.common.appiumby import AppiumBy
 from appium.webdriver.webdriver import WebDriver
 from src.pages.Chatting import Chatting
-from utils.locators.ChattingLocator import ChattingTabLocator, ChatRoomLocator
+from utils.locators.ChattingLocator import ChattingTabLocator, ChatRoomLocator, BottomSheetLocators
 from resources.testdata.test_data import chat_users
 import time
 
@@ -34,7 +34,7 @@ class TestTP01:
         tab_locs = ChattingTabLocator()
 
         try:
-            chatting.go_to_chatting_tap()
+            chatting.go_to_chat_room()
         
             title = chatting.find_element(tab_locs.TITLE)
             assert title.is_displayed(), '✖ 채팅 목록 타이틀 미노출'
@@ -160,9 +160,10 @@ class TestTP03:
 # class TestTP07 최근순 정렬 자동화 불가
 
 
+@pytest.mark.skip(reason='스와이프 기능 구현해보려했으나 지원안됨...')
 @pytest.mark.usefixtures("login_driver")
 class TestTP08: 
-    def test_tp_08_01(self, login_driver: WebDriver, request): # '←'(뒤로가기) 버튼 테스트
+    def test_tp_08_01(self, login_driver: WebDriver, request): # 채팅방 나가기 스와이프
         chatting = Chatting(login_driver)
         chatroom_locs = ChatRoomLocator()
 
@@ -179,6 +180,53 @@ class TestTP08:
             assert exit_alert.is_displayed(), '✖ 채팅방 나가기 모달창 미노출'
             
             chatting.logger.info("✔ 채팅방 나가기 모달창 노출 확인")
+
+        except Exception as e:
+            chatting.logger.error(f"✖ 테스트 실패: {e}")
+            chatting.save_screenshot(request.node.name)
+            raise
+
+
+@pytest.mark.usefixtures("login_driver")
+class TestTP09: 
+    def test_tp_09_01(self, login_driver: WebDriver, request): # 채팅방  '+' 바텀 시트 UI 요소 확인
+        chatting = Chatting(login_driver)
+        bottom_locs = BottomSheetLocators
+
+        user_name = chat_users["user_name"]
+
+        try:
+            chatting.tap_plus_button(user_name)
+
+            for ui_check in bottom_locs.UI_CHECK_LOCS:
+                assert chatting.find_element(ui_check).is_displayed(), f'✖ {ui_check} 아이콘 미노출'
+
+            chatting.logger.info("✔ 바텀시트 UI 요소 노출 확인")
+
+        except Exception as e:
+            chatting.logger.error(f"✖ 테스트 실패: {e}")
+            chatting.save_screenshot(request.node.name)
+            raise
+
+
+    def test_tp_09_02(self, login_driver: WebDriver, request): # 채팅방  '+' 바텀 시트 UI 요소 확인
+        chatting = Chatting(login_driver)
+        bottom_locs = BottomSheetLocators
+        chatroom_locs = ChatRoomLocator()
+
+        user_name = chat_users["user_name"]
+
+        try:
+            chatting.tap_gallery_icon(user_name)
+
+            chatting.click_element(bottom_locs.LOCAL_IMAGE)
+
+            chatting.click_element(bottom_locs.IMAGE_ALERT_YES_BTN)
+
+            title = chatting.find_element(chatroom_locs.chat_room_title(user_name))
+            assert title.is_displayed(), '✖ 채팅방 타이틀 미노출'
+
+            chatting.logger.info("✔ 갤러리-사진 보내기 후 채팅방 복귀 성공 - 이미지는 수동 확인 필요")
 
         except Exception as e:
             chatting.logger.error(f"✖ 테스트 실패: {e}")
