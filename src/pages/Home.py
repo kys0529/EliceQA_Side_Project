@@ -25,7 +25,7 @@ class Home(BasePage):
             self.save_screenshot(f"swipe_element_fail")
 
     # 특정 요소가 나타날 때까지 스크롤 요소를 스와이프
-    def swipe_until_element_visible(self, scroll_element, target_element, direction, percent, max_attempts=5):
+    def swipe_until_element_visible(self, scroll_element, target_element, direction, percent, max_attempts=10):
         for _ in range(max_attempts):
             try:
                 self.driver.find_element(*target_element)
