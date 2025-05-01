@@ -107,7 +107,7 @@ class TestTP03:
             travel_product.click_travel_product_navigation()
             travel_product.logger.info("여행 패키지 화면 진입")
 
-            initial_packages = travel_product.save_all_packages(5)
+            initial_packages = travel_product.save_all_packages_back_top(5)
         
             travel_product.select_package_filter(filter_name)
             travel_product.logger.info(f"{filter_name} 필터 선택")
@@ -300,4 +300,3 @@ class TestTP06:
 
         finally:
             travel_product.logger.info(f"[TP_06_02] 여행 패키지 페이지 무한 스크롤 확인 테스트 완료")
-
