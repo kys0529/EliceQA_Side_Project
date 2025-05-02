@@ -3,7 +3,7 @@ from appium.webdriver.webdriver import WebDriver
 
 from src.pages.Home import Home
 from src.utils.locators import HomeLocator
-from src.utils.locators.TravelProductLocator import TravelProductListLocator
+from src.utils.locators.TravelProductLocator import TravelProductListLocator, TravelProductDetailLocator
 
 @pytest.mark.done
 @pytest.mark.usefixtures("login_driver")
@@ -87,67 +87,74 @@ class TestHP02:
 
 # TODO: TestHP04(전국 날씨 위젯)는 추후 구현
 
-@pytest.mark.blocked
+@pytest.mark.done
 @pytest.mark.usefixtures("login_driver")
 class TestHP05:
-    # def test_hp_05_01(self, login_driver: WebDriver, request): # 인기 관광지 혼잡도의 지역 가로 스크롤 확인
-    #     try:
-    #         home = Home(login_driver) 
-
-    #         scroll_element = home.find_element(HomeLocator.CONGESTION_REGIONS_BAR)
-    #         home.swipe_until_element_visible(scroll_element, HomeLocator.CONGESTION_JEJU_BTN, "left", 0.5)
-
-    #         assert home.find_element(HomeLocator.CONGESTION_JEJU_BTN).is_displayed()
-
-    #         home.logger.info("인기 관광지 혼잡도의 지역 가로 스크롤 확인")
-    #     except Exception as e:
-    #         home.logger.error(f"테스트 실패: {e}")
-    #         home.save_screenshot(request.node.name)
-    #         raise
-
-    # def test_hp_05_02(self, login_driver: WebDriver, request): # 인기 관광지 혼잡도의 관광지 가로 스크롤 확인
-    #     try:
-    #         home = Home(login_driver) 
-
-    #         before_swipe = home.get_attribute(HomeLocator.CONGESTION_FIRST_RESULT, "content-desc")
-    #         results_bar = home.find_element(HomeLocator.CONGESTION_RESULTS_BAR)
-    #         home.swipe_element(results_bar, "left", 1.0)
-    #         after_swipe = home.get_attribute(HomeLocator.CONGESTION_FIRST_RESULT, "content-desc")
-
-    #         assert before_swipe != after_swipe
-
-    #         home.logger.info("인기 관광지 혼잡도의 지역 가로 스크롤 확인")
-    #     except Exception as e:
-    #         home.logger.error(f"테스트 실패: {e}")
-    #         home.save_screenshot(request.node.name)
-    #         raise
-
-    # TODO: test_hp_05_03(인기 관광지 혼잡도 새로고침)은 추후 구현
-
-    def test_hp_05_04(self, login_driver: WebDriver, request): # 인기 관광지 혼잡도의 지역 필터 중 '전체' 필터 확인
+    def test_hp_05_01(self, login_driver: WebDriver, request): # 인기 관광지 혼잡도의 지역 가로 스크롤 확인
         try:
-            home = Home(login_driver)
+            home = Home(login_driver) 
 
-            home.click_element(HomeLocator.CONGESTION_ALL_BTN)
-            # TODO: 전체 필터 결과는 어떻게 검증하면 좋을까?
+            scroll_element = home.find_element(HomeLocator.CONGESTION_REGIONS_BAR)
+            home.swipe_until_element_visible(scroll_element, HomeLocator.CONGESTION_JEJU_BTN, "left", 0.5)
+
+            assert home.find_element(HomeLocator.CONGESTION_JEJU_BTN).is_displayed()
+
+            home.logger.info("인기 관광지 혼잡도의 지역 가로 스크롤 확인")
         except Exception as e:
             home.logger.error(f"테스트 실패: {e}")
             home.save_screenshot(request.node.name)
             raise
-    
-    # TODO: test_hp_05_04 ~ 14는 "데이터를 불러오는데 실패했습니다" 오류로 잠시 중단
-    # test_hp_05_05 ~ test_hp_05_14
-    @pytest.mark.parametrize("locator, region_name", [
-        (HomeLocator.CONGESTION_SEOUL_BTN, "서울"),
-        (HomeLocator.CONGESTION_BUSAN_BTN, "부산"),
-        (HomeLocator.CONGESTION_DAEGU_BTN, "대구"),
-        (HomeLocator.CONGESTION_INCHEON_BTN, "인천"),
-        (HomeLocator.CONGESTION_GWANGJU_BTN, "광주"),
-        (HomeLocator.CONGESTION_DAEJEON_BTN, "대전"),
-        (HomeLocator.CONGESTION_ULSAN_BTN, "울산"),
-        (HomeLocator.CONGESTION_GYEONGGI_BTN, "경기"),
-        (HomeLocator.CONGESTION_GANGWON_BTN, "강원"),
-        (HomeLocator.CONGESTION_JEJU_BTN, "제주")
+
+    def test_hp_05_02(self, login_driver: WebDriver, request): # 인기 관광지 혼잡도의 관광지 가로 스크롤 확인
+        try:
+            home = Home(login_driver) 
+
+            before_swipe = home.get_attribute(HomeLocator.CONGESTION_FIRST_RESULT, "content-desc")
+            scroll_element = home.find_element(HomeLocator.CONGESTION_RESULTS_BAR)
+            home.swipe_element(scroll_element, "left", 1.0)
+            after_swipe = home.get_attribute(HomeLocator.CONGESTION_FIRST_RESULT, "content-desc")
+
+            assert before_swipe != after_swipe
+
+            home.logger.info("인기 관광지 혼잡도의 지역 가로 스크롤 확인")
+        except Exception as e:
+            home.logger.error(f"테스트 실패: {e}")
+            home.save_screenshot(request.node.name)
+            raise
+
+    # TODO: test_hp_05_03(인기 관광지 혼잡도 새로고침)은 추후 구현
+
+    @pytest.mark.parametrize("expected_regions", [
+        ["서울", "부산", "대구", "인천", "광주", "대전", "울산", "경기", "강원", "제주"]
+    ])
+    def test_hp_05_04(self, login_driver: WebDriver, expected_regions, request): # 인기 관광지 혼잡도의 지역 필터 중 '전체' 필터 확인
+        try:
+            home = Home(login_driver)
+            home.wait_until_weather_widget_loaded()
+
+            scroll_element = home.find_element(HomeLocator.CONGESTION_RESULTS_BAR)
+            for i in range(3):
+                first_result_desc = home.get_attribute(HomeLocator.CONGESTION_FIRST_RESULT, "content-desc")
+                home.swipe_element(scroll_element, "left", 0.3)
+                assert any(region in first_result_desc for region in expected_regions)
+
+            home.logger.info("인기 관광지 혼잡도의 지역 필터 중 '전체' 필터 확인")
+        except Exception as e:
+            home.logger.error(f"테스트 실패: {e}")
+            home.save_screenshot(request.node.name)
+            raise
+
+    @pytest.mark.parametrize("locator, region_name", [ 
+        (HomeLocator.CONGESTION_SEOUL_BTN, "서울"), # test_hp_05_05
+        (HomeLocator.CONGESTION_BUSAN_BTN, "부산"), # test_hp_05_06
+        (HomeLocator.CONGESTION_DAEGU_BTN, "대구"), # test_hp_05_07
+        (HomeLocator.CONGESTION_INCHEON_BTN, "인천"), # test_hp_05_08
+        (HomeLocator.CONGESTION_GWANGJU_BTN, "광주"), # test_hp_05_09
+        (HomeLocator.CONGESTION_DAEJEON_BTN, "대전"), # test_hp_05_10
+        (HomeLocator.CONGESTION_ULSAN_BTN, "울산"), # test_hp_05_11
+        (HomeLocator.CONGESTION_GYEONGGI_BTN, "경기"), # test_hp_05_12
+        (HomeLocator.CONGESTION_GANGWON_BTN, "강원"), # test_hp_05_13
+        (HomeLocator.CONGESTION_JEJU_BTN, "제주") # test_hp_05_14
     ])
     def test_hp_05_05(self, login_driver: WebDriver, locator, region_name, request): # 인기 관광지 혼잡도의 지역 필터 중 '서울/부산/대구/인천/광주/대전/울산/경기/강원/제주' 필터 확인
         try:
@@ -160,6 +167,8 @@ class TestHP05:
 
             if (region_name != "강원"): # 강원은 인기 관광지 혼잡도 결과가 존재 X
                 assert region_name in home.get_attribute(HomeLocator.CONGESTION_FIRST_RESULT, "content-desc")
+
+            home.logger.info(f"인기 관광지 혼잡도의 지역 필터 중 {region_name} 필터 확인")
         except Exception as e:
             home.logger.error(f"테스트 실패: {e}")
             home.save_screenshot(request.node.name)
@@ -174,7 +183,7 @@ class TestHP06:
             list_locators = TravelProductListLocator()
 
             home.click_element(HomeLocator.POPULAR_COURSE_MORE)
-            for element in list_locators.UI_CHECK_ELEMENT:
+            for element in list_locators.UI_CHECK_ELEMENTS:
                 assert home.find_element(element).is_displayed()
 
             home.logger.info(f"'지금 인기있는 여행코스는?'의 [더보기] 버튼 클릭 시, 여행상품 탭 정상 진입 확인 및 주요 UI 노출 확인")
@@ -202,7 +211,24 @@ class TestHP08:
             home.save_screenshot(request.node.name)
             raise
 
-# TODO: TestHP09는 추후 구현 (패키지 상세 페이지 요소 정의 X)
+@pytest.mark.done
+@pytest.mark.usefixtures("login_driver")
+class TestHP09:
+    def test_hp_09_01(self, login_driver: WebDriver, request): # 패키지 클릭 시, 선택된 패키지의 상세 페이지 정상 진입 확인 및 주요 UI 노출 확인
+        try:
+            home = Home(login_driver)
+            list_locators = TravelProductDetailLocator()
+
+            home.click_element(HomeLocator.TRAVEL_RECOMM_BTN)
+            home.click_element(HomeLocator.TRAVEL_RECOMM_FIRST_RESULT)
+            for element in list_locators.UI_CHECK_ELEMENTS:
+                assert home.find_element(element).is_displayed()
+
+            home.logger.info(f"패키지 클릭 시, 선택된 패키지의 상세 페이지 정상 진입 확인 및 주요 UI 노출 확인")
+        except Exception as e:
+            home.logger.error(f"테스트 실패: {e}")
+            home.save_screenshot(request.node.name)
+            raise
 
 @pytest.mark.done
 @pytest.mark.usefixtures("login_driver")
@@ -448,7 +474,7 @@ class TestHP17:
             home.save_screenshot(request.node.name)
             raise
 
-@pytest.mark.wip
+#@pytest.mark.wip
 @pytest.mark.usefixtures("login_driver")
 class TestHP18:
     # def test_hp_18_01(self, login_driver: WebDriver, request): # [새 게시물 추가] 버튼 클릭 시, 새 게시물 페이지 정상 진입 확인 및 주요 UI 노출 확인
@@ -486,6 +512,20 @@ class TestHP18:
     def test_hp_18_03(self, login_driver: WebDriver, request): # 
         try:
             home = Home(login_driver)
+
+            # TODO: 공유 버튼이 정상적으로 동작하지 않는 걸 어떻게 검증?
+
+            home.logger.info(f"")
+        except Exception as e:
+            home.logger.error(f"테스트 실패: {e}")
+            home.save_screenshot(request.node.name)
+            raise
+
+    def test_hp_18_04(self, login_driver: WebDriver, request): # 
+        try:
+            home = Home(login_driver)
+
+            # TODO: 이미지 첨부 기능 구현
 
             home.logger.info(f"")
         except Exception as e:
