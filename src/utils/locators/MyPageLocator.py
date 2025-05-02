@@ -118,6 +118,13 @@ class MypageProfile:  # 프로필 페이지 LOCATOR 모음 - 작업 완료
         )
         return PROFILE_NICKNAME
 
+    def get_profile_email(email):
+        PROFILE_EMAIL = (
+            AppiumBy.ANDROID_UIAUTOMATOR,
+            f'new UiSelector().description("{email}")',
+        )
+        return PROFILE_EMAIL
+
     @staticmethod
     def get_profile_introduce(introduce):
         PROFILE_INTRODUCE = (
