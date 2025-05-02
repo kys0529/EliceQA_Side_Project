@@ -12,14 +12,24 @@ from appium.webdriver.common.appiumby import AppiumBy
 """
 
 
-class MypageMainLocator:  # 마이페이지 메인 & UI 공통 LOCATOR 모음 - 작업 완료
+class MypageMain:  # 마이페이지 메인 & UI 공통 & 마이페이지 테스트에 필요한 기타 LOCATOR 모음 - 작업 완료
     # 계정 유형 공통 - 작업 완료
     MYPAGE_TITLE = (AppiumBy.ACCESSIBILITY_ID, "마이페이지")
-    MYPAGE_TAB = (AppiumBy.ACCESSIBILITY_ID, "마이페이지\n탭 4개 중 4번째")
     THEME_TOGGLE_BTN = (
         AppiumBy.ANDROID_UIAUTOMATOR,
         'new UiSelector().className("android.view.View").instance(5)',
     )
+
+    PROFILE_PHOTO = (
+        AppiumBy.ANDROID_UIAUTOMATOR,
+        'new UiSelector().className("android.view.View").instance(8)',
+    )
+
+    @staticmethod
+    def get_user_profile_locator(nickname, email):
+        USER_PROFILE_MENU = (AppiumBy.ACCESSIBILITY_ID, f"{nickname}\n{email}")
+        return USER_PROFILE_MENU
+
     MY_RESERVATION_LIST_MENU = (
         AppiumBy.ACCESSIBILITY_ID,
         "내 예약 내역\n예약한 패키지를 확인합니다",
@@ -29,11 +39,6 @@ class MypageMainLocator:  # 마이페이지 메인 & UI 공통 LOCATOR 모음 - 
         "찜한 패키지\n관심 있는 패키지를 확인합니다",
     )
     LOGOUT_BTN = (AppiumBy.ACCESSIBILITY_ID, "로그아웃")
-
-    @staticmethod
-    def get_user_profile_locator(nickname, email):
-        USER_PROFILE_MENU = (AppiumBy.ACCESSIBILITY_ID, f"{nickname}\n{email}")
-        return USER_PROFILE_MENU
 
     # 가이드 계정 Only - 작업 완료
     MAKE_MY_PACKAGE_MENU = (
@@ -56,17 +61,29 @@ class MypageMainLocator:  # 마이페이지 메인 & UI 공통 LOCATOR 모음 - 
     )
 
     # UI 공통 항목 (팝업 공통 버튼, 뒤로가기 등)
-    MYPAGE_BACK = (AppiumBy.ACCESSIBILITY_ID, "뒤로")
-    MYPAGE_POPUP_CANCEL = (AppiumBy.ACCESSIBILITY_ID, "취소")
-    MYPAGE_POPUP_COMFIRM = (AppiumBy.ACCESSIBILITY_ID, "확인")
+    BACK = (AppiumBy.ACCESSIBILITY_ID, "뒤로")
+    POPUP_CANCEL = (AppiumBy.ACCESSIBILITY_ID, "취소")
+    POPUP_COMFIRM = (AppiumBy.ACCESSIBILITY_ID, "확인")
+
+    # 탭 항목들
+    HOME_TAB = (AppiumBy.ACCESSIBILITY_ID, "홈\n탭 4개 중 1번째")
+    TRAVEL_PRODUCT_TAB = (AppiumBy.ACCESSIBILITY_ID, "여행상품\n탭 4개 중 2번째")
+    CHATTING_TAB = (AppiumBy.ACCESSIBILITY_ID, "채팅\n탭 4개 중 3번째")
+    MYPAGE_TAB = (AppiumBy.ACCESSIBILITY_ID, "마이페이지\n탭 4개 중 4번째")
+
+    # 테스트 시 필요한 요소
+    LOGIN_TOAST = (
+        By.XPATH,
+        '//android.view.View[contains(@content-desc, "님 환영합니다")]',
+    )  # 닉네임 추출을 위한 로그인 후 뜨는 토스트
 
 
-class MypageProfileLocator:  # 프로필 페이지 LOCATOR 모음 - 작업 완료
+class MypageProfile:  # 프로필 페이지 LOCATOR 모음 - 작업 완료
     # 계정 공통 - 작업 완료
     @staticmethod
     def get_profile_title_locator(nickname):
-        PROFILE_PAGE_TITLE = (AppiumBy.ACCESSIBILITY_ID, f"{nickname} 님의 프로필")
-        return PROFILE_PAGE_TITLE
+        PAGE_TITLE = (AppiumBy.ACCESSIBILITY_ID, f"{nickname} 님의 프로필")
+        return PAGE_TITLE
 
     @staticmethod
     def get_my_account_type(accountType):
@@ -165,48 +182,48 @@ class MypagePWDConfirm:  # 비밀번호 확인 팝업 LOCATOR 모음 - 작업 �
 
 
 class MypageModifyPage:  # 회원 정보 수정 페이지 LOCATOR 모음 - 작업 필요
-    MYPAGE_MODI_TITLE = (AppiumBy.ACCESSIBILITY_ID, "회원 정보 수정")
-    MYPAGE_MODI_PROFILE_IMG = (
+    MODI_TITLE = (AppiumBy.ACCESSIBILITY_ID, "회원 정보 수정")
+    MODI_PROFILE_IMG = (
         AppiumBy.ANDROID_UIAUTOMATOR,
         'new UiSelector().className("android.view.View").instance(6)',
     )
 
     @staticmethod
     def get_modify_nickname_input(nickname):
-        MYPAGE_MODI_NICKNAME_INPUT = (
+        MODI_NICKNAME_INPUT = (
             AppiumBy.ANDROID_UIAUTOMATOR,
             f'new UiSelector().text("{nickname}")',
         )
-        return MYPAGE_MODI_NICKNAME_INPUT
+        return MODI_NICKNAME_INPUT
 
     @staticmethod
     def get_modify_email_textview(email):
-        MYPAGE_MODI_EMAIL_TEXTVIEW = (
+        MODI_EMAIL_TEXTVIEW = (
             AppiumBy.ANDROID_UIAUTOMATOR,
             f'new UiSelector().text("{email}")',
         )
-        return MYPAGE_MODI_EMAIL_TEXTVIEW
+        return MODI_EMAIL_TEXTVIEW
 
     @staticmethod
     def get_modify_introduce_input(introduce):
-        MYPAGE_MODI_INTRODUCE_INPUT = (
+        MODI_INTRODUCE_INPUT = (
             AppiumBy.ANDROID_UIAUTOMATOR,
             f'new UiSelector().text("{introduce}")',
         )
-        return MYPAGE_MODI_INTRODUCE_INPUT
+        return MODI_INTRODUCE_INPUT
 
-    MYPAGE_MODI_GENDER_MAN = (AppiumBy.ACCESSIBILITY_ID, "남성")
-    MYPAGE_MODI_GENDER_WOMAN = (AppiumBy.ACCESSIBILITY_ID, "여성")
-    MYPAGE_MODI_BIRTH_ICON = (
+    MODI_GENDER_MAN = (AppiumBy.ACCESSIBILITY_ID, "남성")
+    MODI_GENDER_WOMAN = (AppiumBy.ACCESSIBILITY_ID, "여성")
+    MODI_BIRTH_ICON = (
         AppiumBy.ANDROID_UIAUTOMATOR,
         'new UiSelector().className("android.widget.Button").instance(3)',
     )
-    MYPAGE_MODI_BIRTH_CAL_POPUP = (
+    MODI_BIRTH_CAL_POPUP = (
         AppiumBy.ANDROID_UIAUTOMATOR,
         'new UiSelector().className("android.view.View").instance(3)',
     )
     # 날짜 직접 입력 / 캘린더 뷰 모드 전환 아이콘
-    MYPAGE_MODI_BIRTH_CAL_MODE_ICON = (
+    MODI_BIRTH_CAL_MODE_ICON = (
         AppiumBy.ANDROID_UIAUTOMATOR,
         'new UiSelector().className("android.widget.Button").instance(0)',
     )
@@ -214,16 +231,16 @@ class MypageModifyPage:  # 회원 정보 수정 페이지 LOCATOR 모음 - 작�
     @staticmethod
     # 생일 캘린더 날짜 직접 입력 모드 전환 시 나오는 input
     def get_modi_birth_cal_date_input(birthdate):
-        MYPAGE_MODI_BIRTH_CAL_DATE_INPUT = (
+        MODI_BIRTH_CAL_DATE_INPUT = (
             AppiumBy.ANDROID_UIAUTOMATOR,
             f'new UiSelector().text("{birthdate}")',
         )
-        return MYPAGE_MODI_BIRTH_CAL_DATE_INPUT
+        return MODI_BIRTH_CAL_DATE_INPUT
 
     # 달력 날짜 선택은 일단 직접 입력 모드로만 우선 확인해보는걸로.. 캘린더뷰 선택 완전 난감..
 
-    MYPAGE_MODI_SAVE_BTN = (AppiumBy.ACCESSIBILITY_ID, "저장")
-    MYPAGE_MODI_WITHDRAW = (AppiumBy.ACCESSIBILITY_ID, "회원 탈퇴")
+    MODI_SAVE_BTN = (AppiumBy.ACCESSIBILITY_ID, "저장")
+    MODI_WITHDRAW = (AppiumBy.ACCESSIBILITY_ID, "회원 탈퇴")
 
 
 class MypageMyRes:  # 내 예약 내역 페이지 LOCATOR 모음 - 작업 필요
