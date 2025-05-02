@@ -68,6 +68,18 @@ class BasePage:
             self.save_screenshot("find_element_fail")
             raise
 
+    # 요소들 존재 확인 (화면에 존재할 때까지 대기)
+    def find_elements(self, locator):
+        try:
+            elements = self.wait.until(EC.presence_of_all_elements_located(locator))
+            self.logger.info(f"✔ {locator} 요소들 존재 확인")
+            return elements
+        
+        except (NoSuchElementException, TimeoutException) as e:
+            self.logger.error(f"✖ {locator} 요소들을 찾지 못하거나 대기 시간 초과: {e}")
+            self.save_screenshot("find_elements_fail")
+            raise
+
     # 요소 입력
     def send_keys(self, locator, text):
         try:

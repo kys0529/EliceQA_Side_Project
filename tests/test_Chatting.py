@@ -3,7 +3,7 @@ from appium.webdriver.common.appiumby import AppiumBy
 from appium.webdriver.webdriver import WebDriver
 from src.pages.Chatting import Chatting
 from utils.locators.ChattingLocator import ChattingTabLocator, ChatRoomLocator, BottomSheetLocators
-from resources.testdata.test_data import chat_users
+from resources.testdata.test_data import chat_users, data_package
 import time
 
 @pytest.mark.done
@@ -343,6 +343,7 @@ class TestTP11:
         bottom_locs = BottomSheetLocators()
 
         user_name = chat_users["user_name"]
+
         try:
             chatting.tap_bottom_icon(user_name, bottom_locs.USER_ICON)
 
@@ -378,6 +379,7 @@ class TestTP11:
             chatting.save_screenshot(request.node.name)
             raise
 
+
     @pytest.mark.parametrize(
     "search_key, search_value",
         ("user_name", chat_users["user_name"]), 
@@ -400,7 +402,7 @@ class TestTP11:
             profile = chatting.find_element(bottom_locs.search_user_profile(chat_users["user_name"], chat_users["email"]))
             assert profile.is_displayed(), f"✖ {search_key} 검색 실패"
 
-            chatting.logger.info(f"✔ {search_key}로 사용자 프로필 카드 노출 성공")
+            chatting.logger.info(f"✔ {search_key} 검색 -> 사용자 프로필 카드 노출 성공")
 
         except Exception as e:
             chatting.logger.error(f"✖ 테스트 실패: {e}")
@@ -419,7 +421,7 @@ class TestTP12:
         email = chat_users["email"]
 
         try:
-            chatting.search_user_profile_card(user_name, bottom_locs.USER_ICON, bottom_locs.search_user_profile_share_btn(user_name, email))
+            chatting.search_user_input_and_btn(user_name, bottom_locs.USER_ICON, bottom_locs.search_user_profile_share_btn(user_name, email))
 
             alert = chatting.find_element(bottom_locs.PROFILE_SHARE_ALERT)
             assert alert.is_displayed(), '✖ 프로필 정보 미리보기 모달창 미노출'
@@ -446,7 +448,7 @@ class TestTP13:
         email = chat_users["email"]
 
         try:
-            chatting.search_user_profile_card(user_name, bottom_locs.USER_ICON, bottom_locs.search_user_profile_share_btn(user_name, email))
+            chatting.search_user_input_and_btn(user_name, bottom_locs.USER_ICON, bottom_locs.search_user_profile_share_btn(user_name, email))
 
             chatting.click_element(bottom_locs.FROFILE_SHARE_ALERT_CANCEL_BTN)
 
@@ -470,7 +472,7 @@ class TestTP13:
         email = chat_users["email"]
 
         try:
-            chatting.search_user_profile_card(user_name, bottom_locs.USER_ICON, bottom_locs.search_user_profile_share_btn(user_name, email))
+            chatting.search_user_input_and_btn(user_name, bottom_locs.USER_ICON, bottom_locs.search_user_profile_share_btn(user_name, email))
 
             chatting.click_element(bottom_locs.FROFILE_SHARE_ALERT_SEND_BTN)
 
@@ -478,6 +480,126 @@ class TestTP13:
             assert title.is_displayed(), '✖ 채팅방 화면 미노출'
             
             chatting.logger.info("✔ 채팅방 화면 노출 확인")
+
+        except Exception as e:
+            chatting.logger.error(f"✖ 테스트 실패: {e}")
+            chatting.save_screenshot(request.node.name)
+            raise
+
+
+@pytest.mark.wip
+@pytest.mark.usefixtures("login_driver")
+class TestTP14: 
+    def test_tp_14_01(self, login_driver: WebDriver, request): # 사용자 공유 후 1:1 채팅하기
+        chatting = Chatting(login_driver)
+        cr_locs = ChatRoomLocator()
+        bottom_locs = BottomSheetLocators()
+
+        user_name = chat_users["user_name"]
+        email = chat_users["email"]
+
+        try:
+            chatting.share_user_profile_dm(user_name, bottom_locs.USER_ICON, bottom_locs.search_user_profile_share_btn(user_name, email))
+
+            title = chatting.find_element(cr_locs.chat_room_title)
+            assert title.is_displayed(), '✖ 해당 사용자와의 1:1 채팅방 미노출'
+            
+            chatting.logger.info("✔ 해당 사용자와의 1:1 채팅방 노출 확인")
+
+        except Exception as e:
+            chatting.logger.error(f"✖ 테스트 실패: {e}")
+            chatting.save_screenshot(request.node.name)
+            raise
+
+
+
+@pytest.mark.wip
+@pytest.mark.usefixtures("login_driver")
+class TestTP15: 
+    def test_tp_15_01(self, login_driver: WebDriver, request): # 사용자 공유 후 프로필 화면으로 이동
+        chatting = Chatting(login_driver)
+        cr_locs = ChatRoomLocator()
+        bottom_locs = BottomSheetLocators()
+
+        user_name = chat_users["user_name"]
+        email = chat_users["email"]
+
+        try:
+            chatting.share_user_profile_view(user_name, bottom_locs.USER_ICON, bottom_locs.search_user_profile_share_btn(user_name, email))
+
+            title = chatting.find_element(bottom_locs.view_profile_title(user_name))
+            assert title.is_displayed(), '✖ 해당 사용자의 프로필 화면 미노출'
+            
+            chatting.logger.info("✔ 해당 사용자의 프로필 화면 노출 확인")
+
+        except Exception as e:
+            chatting.logger.error(f"✖ 테스트 실패: {e}")
+            chatting.save_screenshot(request.node.name)
+            raise
+
+
+
+@pytest.mark.wip
+@pytest.mark.usefixtures("login_driver")
+class TestTP16: 
+    def test_tp_16_01(self, login_driver: WebDriver, request): # 패키지 화면 UI 요소 확인
+        chatting = Chatting(login_driver)
+        bottom_locs = BottomSheetLocators()
+
+        user_name = chat_users["user_name"]
+
+        try:
+            chatting.tap_bottom_icon(user_name, bottom_locs.PACKAGE_ICON)
+
+            for ui_check in bottom_locs.PACKAGE_UI_LOCS:
+                assert chatting.find_element(ui_check).is_displayed(), f'✖ {ui_check} 미노출'
+
+            chatting.logger.info("✔ 패키지 화면 UI 요소 노출 확인")
+
+        except Exception as e:
+            chatting.logger.error(f"✖ 테스트 실패: {e}")
+            chatting.save_screenshot(request.node.name)
+            raise
+
+
+    def test_tp_16_02(self, login_driver: WebDriver, request): # '←'(뒤로가기) 버튼 테스트
+        chatting = Chatting(login_driver)
+        bottom_locs = BottomSheetLocators()
+        cr_locs = ChatRoomLocator()
+
+        user_name = chat_users["user_name"]
+
+        try:
+            chatting.tap_bottom_icon(user_name, bottom_locs.PACKAGE_ICON)
+            chatting.click_element(bottom_locs.BACK_BTN_PACKAGE)
+
+            title = chatting.find_element(cr_locs.chat_room_title)
+            assert title.is_displayed(), '✖ 채팅 목록으로 복귀 실패'
+            
+            chatting.logger.info("✔ 채팅목록 화면 노출 확인")
+
+        except Exception as e:
+            chatting.logger.error(f"✖ 테스트 실패: {e}")
+            chatting.save_screenshot(request.node.name)
+            raise
+
+
+    def test_tp_16_03(self, login_driver: WebDriver, request): # 패키지 검색창 입력 테스트
+        chatting = Chatting(login_driver)
+        cr_locs = ChatRoomLocator()
+        bottom_locs = BottomSheetLocators()
+
+        user_name = chat_users["user_name"]
+        package = data_package["package_name"]
+
+        try:
+            chatting.search_package_input_and_btn(user_name, bottom_locs.PACKAGE_ICON, package, bottom_locs.SEARCH_BTN_PACKAGE)
+
+            results = chatting.find_elements(bottom_locs.PACKAGE_LIST)
+            
+            assert len(results) > 0, f"✖ {package} 검색 실패"
+
+            chatting.logger.info(f"✔ {package} 검색 -> 패키지 목록 노출")
 
         except Exception as e:
             chatting.logger.error(f"✖ 테스트 실패: {e}")

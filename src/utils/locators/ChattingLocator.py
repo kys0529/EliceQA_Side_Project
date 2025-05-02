@@ -93,8 +93,13 @@ class BottomSheetLocators: # 바텀시트 관련 로케이터
   PACKAGE_TITLE = (AppiumBy.ACCESSIBILITY_ID, '패키지 찾기') # 패키지 검색창 타이틀
   SEARCH_INPUT_PACKAGE = (AppiumBy.XPATH, '//android.widget.EditText[@hint="패키지 이름, 지역 또는 가이드 이름 검색"]') # 패키지 검색창
   SEARCH_BTN_PACKAGE = (AppiumBy.XPATH, '//android.widget.FrameLayout[@resource-id="android:id/content"]/android.widget.FrameLayout/android.view.View/android.view.View/android.view.View/android.widget.Button') #검색 버튼
-  PACKAGE_LIST_ITEM = (AppiumBy.XPATH, '//android.widget.FrameLayout[@resource-id="android:id/content"]/android.widget.FrameLayout/android.view.View/android.view.View/android.view.View/android.view.View[2]/android.view.View') #패키지 리스트 인데 하나 뽑아올수있을지 체크
-  PACKAGE_LIST = (AppiumBy.XPATH, '//android.widget.FrameLayout[@resource-id="android:id/content"]/android.widget.FrameLayout/android.view.View/android.view.View/android.view.View/android.view.View[1]') #패키지 빈 리스트 체크 필요
+
+  PACKAGE_UI_LOCS = [BACK_BTN_PACKAGE, PACKAGE_TITLE, SEARCH_INPUT_PACKAGE, SEARCH_BTN_PACKAGE]
+
+  PACKAGE_LIST = (AppiumBy.XPATH, '//android.widget.FrameLayout[@resource-id="android:id/content"]/android.widget.FrameLayout/android.view.View/android.view.View/android.view.View/android.view.View[2]') #패키지 리스트 인데 하나 뽑아올수있을지 체크
+
+  PACKAGE_EMPTY_LIST = (AppiumBy.XPATH, '//android.widget.FrameLayout[@resource-id="android:id/content"]/android.widget.FrameLayout/android.view.View/android.view.View/android.view.View/android.view.View[1]') #패키지 빈 리스트 체크 필요
+
   PACKAGE_SHARE_BTN = (AppiumBy.XPATH, '//android.widget.ImageView[@content-desc="빵덕후 가격: 5580.0원 가이드: 사용자 A"]/android.widget.Button') # 패키지 공유 버튼 재사용 가능한지 체크
   PACKAGE_SHARE_ALERT = (AppiumBy.XPATH, '//android.view.View[@content-desc="닫기"]/android.view.View/android.view.View') # 공유하기 모달창
   ALERT_VIEW_PACKAGE_DETAIL_BTN = (AppiumBy.ACCESSIBILITY_ID, '패키지 상세 정보 보기') # 공유하기 모달창 상세보기 버튼

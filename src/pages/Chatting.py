@@ -40,7 +40,7 @@ class Chatting(BasePage):
 
 
     def tap_plus_button(self, user_name):
-        """채팅방 하단 + 버튼 터치"""
+        """채팅방 하단 '+' 버튼 터치"""
         self.go_to_chat_room(user_name)
         self.click_element(self.c_room_locs.PLUS_BTN)
 
@@ -73,9 +73,31 @@ class Chatting(BasePage):
         self.click_element(self.bottom_locs.IMAGE_ALERT_NO_BTN) # 아니오 버튼 터치
 
 
-    def search_user_profile_card(self, user_name, icon_locator, btn_locator):
+    def search_user_input_and_btn(self, user_name, icon_locator, btn_locator):
+        """아이콘 선택-> 사용자 검색창 입력-> 검색버튼 터치"""
         self.tap_bottom_icon(user_name, icon_locator)
         self.send_keys(user_name)
+        self.click_element(btn_locator)
+
+
+    def share_user_profile_dm(self, user_name, icon_locator, btn_locator):
+        """사용자 프로필 공유-> 1:1 채팅하기 터치"""
+        self.search_user_input_and_btn(user_name, icon_locator, btn_locator)
+        self.click_element(self.bottom_locs.FROFILE_SHARE_ALERT_SEND_BTN)
+        self.click_element(self.bottom_locs.PROFILE_DM_BTN)
+
+
+    def share_user_profile_view(self, user_name, icon_locator, btn_locator):
+        """사용자 프로필 공유-> 프로필 보기 터치"""
+        self.search_user_input_and_btn(user_name, icon_locator, btn_locator)
+        self.click_element(self.bottom_locs.FROFILE_SHARE_ALERT_SEND_BTN)
+        self.click_element(self.bottom_locs.VIEW_PROFILE_BTN)
+
+
+    def search_package_input_and_btn(self, user_name, icon_locator, package, btn_locator):
+        """아이콘 선택-> 패키지 검색창 입력-> 검색버튼 터치"""
+        self.tap_bottom_icon(user_name, icon_locator)
+        self.send_keys(package)
         self.click_element(btn_locator)
 
 
