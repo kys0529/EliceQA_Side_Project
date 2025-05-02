@@ -2,10 +2,10 @@ import pytest
 from src.pages.TravelProduct import TravelProduct
 from appium.webdriver.webdriver import WebDriver
 
-
+@pytest.mark.done
 @pytest.mark.usefixtures("login_driver")
 class TestTP01:
-    # [TP_01_01] 여행 패키지 페이지 진입 확인
+    # [TP_01_01] 여행 패키지 화면 진입 확인
     def test_TP_01_01(self, login_driver: WebDriver, request):
         travel_product = TravelProduct(login_driver)
         
@@ -14,7 +14,7 @@ class TestTP01:
             travel_product.logger.info("여행 패키지 화면 진입")
 
             assert travel_product.is_package_title_displayed()
-            travel_product.logger.info("여행 패키지 페이지 진입 확인")
+            travel_product.logger.info("여행 패키지 화면 진입 확인")
 
         except Exception as e:
             travel_product.logger.error(f"✖ 테스트 중 문제 발생: {e}")
@@ -22,9 +22,9 @@ class TestTP01:
             raise
 
         finally:
-            travel_product.logger.info("[TP_01_01] 여행 패키지 페이지 진입 확인 테스트 완료")
+            travel_product.logger.info("[TP_01_01] 여행 패키지 화면 진입 확인 테스트 완료")
 
-    # [TP_01_02] 여행 패키지 페이지 UI 요소 노출 확인
+    # [TP_01_02] 여행 패키지 화면 UI 요소 노출 확인
     def test_TP_01_02(self, login_driver: WebDriver, request):
         travel_product = TravelProduct(login_driver)
 
@@ -33,7 +33,7 @@ class TestTP01:
             travel_product.logger.info("여행 패키지 화면 진입")
         
             assert travel_product.check_package_ui_elements()
-            travel_product.logger.info("여행 패키지 페이지 UI요소 노출 확인")
+            travel_product.logger.info("여행 패키지 화면 UI요소 노출 확인")
 
         except Exception as e:
             travel_product.logger.error(f"✖ 테스트 중 문제 발생: {e}")
@@ -41,12 +41,13 @@ class TestTP01:
             raise
 
         finally:
-            travel_product.logger.info("[TP_01_02] 여행 패키지 페이지 UI 요소 노출 확인 테스트 완료")
+            travel_product.logger.info("[TP_01_02] 여행 패키지 화면 UI 요소 노출 확인 테스트 완료")
 
 
+@pytest.mark.done
 @pytest.mark.usefixtures("login_driver")
 class TestTP02:
-    # [TP_02_01] 여행 패키지 페이지 검색 확인 - 검색 결과 존재하는 케이스
+    # [TP_02_01] 여행 패키지 화면 검색 확인 - 검색 결과 존재하는 케이스
     def test_TP_02_01(self, login_driver: WebDriver, request):
         travel_product = TravelProduct(login_driver)
 
@@ -68,9 +69,9 @@ class TestTP02:
             raise
 
         finally:
-            travel_product.logger.info("[TP_02_01] 여행 패키지 페이지 검색 확인 - 검색 결과 존재하는 케이스 테스트 완료")
+            travel_product.logger.info("[TP_02_01] 여행 패키지 화면 검색 확인 - 검색 결과 존재하는 케이스 테스트 완료")
 
-    # [TP_02_02] 여행 패키지 페이지 검색 확인 - 검색 결과 존재하지 않는 케이스
+    # [TP_02_02] 여행 패키지 화면 검색 확인 - 검색 결과 존재하지 않는 케이스
     def test_TP_02_02(self, login_driver: WebDriver, request):
         travel_product = TravelProduct(login_driver)
 
@@ -92,12 +93,13 @@ class TestTP02:
             raise
 
         finally:
-            travel_product.logger.info("[TP_02_02] 여행 패키지 페이지 검색 확인 - 검색 결과 존재하지 않는 케이스 테스트 완료")
+            travel_product.logger.info("[TP_02_02] 여행 패키지 화면 검색 확인 - 검색 결과 존재하지 않는 케이스 테스트 완료")
 
 
+@pytest.mark.done
 @pytest.mark.usefixtures("login_driver")
 class TestTP03:
-    # [TP_03_01] 여행 패키지 페이지 전체 필터 확인
+    # [TP_03_01] 여행 패키지 화면 전체 필터 확인
     def test_TP_03_01(self, login_driver: WebDriver, request):
         travel_product = TravelProduct(login_driver)
 
@@ -123,9 +125,9 @@ class TestTP03:
             raise
 
         finally:
-            travel_product.logger.info("[TP_03_01] 여행 패키지 페이지 전체 필터 확인 테스트 완료")
+            travel_product.logger.info("[TP_03_01] 여행 패키지 화면 전체 필터 확인 테스트 완료")
 
-    # [TP_03_02~TP_03_11] 여행 패키지 페이지 지역별 필터 확인 
+    # [TP_03_02~TP_03_11] 여행 패키지 화면 지역별 필터 확인 
     @pytest.mark.parametrize("filter_name", ["서울", "인천/경기", "강원", "대전/충남", "충북", "광주/전남", "전북", "부산/경남", "대구/경북", "제주도"])
     def test_TP_03_02(self, login_driver: WebDriver, request, filter_name):
         travel_product = TravelProduct(login_driver)
@@ -138,8 +140,8 @@ class TestTP03:
             travel_product.logger.info(f"{filter_name} 필터 선택")
 
             assert travel_product.package_filter_select_check(filter_name)
-  
             element = travel_product.check_no_filter_results()
+
             if element:
                 travel_product.logger.info(f"{filter_name} 필터 확인 - 등록된 패키지 없음")
             else:
@@ -151,12 +153,13 @@ class TestTP03:
             raise
 
         finally:
-            travel_product.logger.info(f"[TP_03_02~TP_03_11] 여행 패키지 페이지 {filter_name} 필터 확인 테스트 완료")
+            travel_product.logger.info(f"[TP_03_02~TP_03_11] 여행 패키지 화면 {filter_name} 필터 확인 테스트 완료")
     
 
+@pytest.mark.done
 @pytest.mark.usefixtures("login_driver")
 class TestTP04:
-    # [TP_04_02] 여행 패키지 페이지 인기순 정렬 확인 
+    # [TP_04_02] 여행 패키지 화면 인기순 정렬 확인 
     def test_TP_04_02(self, login_driver: WebDriver, request):
         travel_product = TravelProduct(login_driver)
 
@@ -178,9 +181,9 @@ class TestTP04:
             raise
 
         finally:
-            travel_product.logger.info(f"[TP_04_02] 여행 패키지 페이지 인기순 정렬 확인 테스트 완료")
+            travel_product.logger.info("[TP_04_02] 여행 패키지 화면 인기순 정렬 확인 테스트 완료")
     
-    # [TP_04_03] 여행 패키지 페이지 가격 낮은순 정렬 확인 
+    # [TP_04_03] 여행 패키지 화면 가격 낮은순 정렬 확인 
     def test_TP_04_03(self, login_driver: WebDriver, request):
         travel_product = TravelProduct(login_driver)
 
@@ -202,9 +205,9 @@ class TestTP04:
             raise
 
         finally:
-            travel_product.logger.info(f"[TP_04_03] 여행 패키지 페이지 가격 낮은순 정렬 확인 테스트 완료")
+            travel_product.logger.info("[TP_04_03] 여행 패키지 화면 가격 낮은순 정렬 확인 테스트 완료")
  
-    # [TP_04_04] 여행 패키지 페이지 가격 높은순 정렬 확인
+    # [TP_04_04] 여행 패키지 화면 가격 높은순 정렬 확인
     def test_TP_04_04(self, login_driver: WebDriver, request):
         travel_product = TravelProduct(login_driver)
 
@@ -226,12 +229,13 @@ class TestTP04:
             raise
 
         finally:
-            travel_product.logger.info(f"[TP_04_04] 여행 패키지 페이지 가격 높은순 정렬 확인 테스트 완료")
+            travel_product.logger.info("[TP_04_04] 여행 패키지 화면 가격 높은순 정렬 확인 테스트 완료")
 
 
+@pytest.mark.done
 @pytest.mark.usefixtures("login_driver")
 class TestTP05:
-    # [TP_05_01] 여행 패키지 페이지 찜 선택 확인
+    # [TP_05_01] 여행 패키지 화면 찜 선택 확인
     def test_TP_05_01(self, login_driver: WebDriver, request):
         travel_product = TravelProduct(login_driver)
 
@@ -251,10 +255,10 @@ class TestTP05:
             raise
 
         finally:
-            travel_product.logger.info(f"[TP_05_01] 여행 패키지 페이지 찜 선택 확인 테스트 완료")
+            travel_product.logger.info("[TP_05_01] 여행 패키지 화면 찜 선택 확인 테스트 완료")
 
     
-    # [TP_05_02] 여행 패키지 페이지 찜 취소 확인
+    # [TP_05_02] 여행 패키지 화면 찜 취소 확인
     def test_TP_05_02(self, login_driver: WebDriver, request):
         travel_product = TravelProduct(login_driver)
 
@@ -274,12 +278,13 @@ class TestTP05:
             raise
 
         finally:
-            travel_product.logger.info(f"[TP_05_02] 여행 패키지 페이지 찜 취소 확인 테스트 완료")
+            travel_product.logger.info("[TP_05_02] 여행 패키지 화면 찜 취소 확인 테스트 완료")
 
 
+@pytest.mark.done
 @pytest.mark.usefixtures("login_driver")
 class TestTP06:
-    # [TP_06_01] 여행 패키지 페이지 무한 스크롤 확인
+    # [TP_06_01] 여행 패키지 화면 무한 스크롤 확인
     def test_TP_06_01(self, login_driver: WebDriver, request):
         travel_product = TravelProduct(login_driver)
 
@@ -299,4 +304,117 @@ class TestTP06:
             raise
 
         finally:
-            travel_product.logger.info(f"[TP_06_02] 여행 패키지 페이지 무한 스크롤 확인 테스트 완료")
+            travel_product.logger.info("[TP_06_01] 여행 패키지 화면 무한 스크롤 확인 테스트 완료")
+
+
+@pytest.mark.done
+@pytest.mark.usefixtures("login_driver")
+class TestTP07:
+    # [TP_07_01] 패키지 상세 화면 진입 확인
+    def test_TP_07_01(self, login_driver: WebDriver, request):
+        travel_product = TravelProduct(login_driver)
+
+        region = "강원"
+
+        try:
+            travel_product.click_travel_product_navigation()
+            travel_product.click_package_save_info(region)
+            travel_product.logger.info("패키지 상세 화면 진입")
+
+            assert travel_product.is_detail_title_displayed()
+            travel_product.logger.info("패키지 상세 화면 진입 확인")
+
+        except Exception as e:
+            travel_product.logger.error(f"✖ 테스트 중 문제 발생: {e}")
+            travel_product.save_screenshot(request.node.name)
+            raise
+
+        finally:
+            travel_product.logger.info("[TP_07_01] 패키지 상세 화면 진입 확인 테스트 완료")
+
+    # [TP_07_02] 패키지 상세 화면 UI 요소 노출 확인
+    def test_TP_07_02(self, login_driver: WebDriver, request):
+        travel_product = TravelProduct(login_driver)
+
+        region = "강원"
+
+        try:
+            travel_product.click_travel_product_navigation()
+            name, price = travel_product.click_package_save_info(region)
+            travel_product.logger.info("패키지 상세 화면 진입")
+
+            element = travel_product.check_detail_image_elements()
+
+            if element:
+                travel_product.logger.info("등록된 이미지 존재")
+            else:
+                travel_product.logger.info("등록된 이미지 없음")
+
+            assert travel_product.check_detail_ui_elements(region, name, price)
+            travel_product.logger.info("패키지 상세 화면 UI요소 노출 확인")
+
+        except Exception as e:
+            travel_product.logger.error(f"✖ 테스트 중 문제 발생: {e}")
+            travel_product.save_screenshot(request.node.name)
+            raise
+
+        finally:
+            travel_product.logger.info("[TP_07_02]  패키지 상세 화면 UI 요소 노출 확인 테스트 완료")
+
+
+@pytest.mark.done
+@pytest.mark.usefixtures("login_driver")
+class TestTP08:
+    # [TP_08_01] 가이드 채팅 화면 진입 확인
+    def test_TP_08_01(self, login_driver: WebDriver, request):
+        travel_product = TravelProduct(login_driver)
+
+        region = "강원"
+
+        try:
+            travel_product.click_travel_product_navigation()
+            travel_product.click_package_save_info(region)
+            travel_product.logger.info("패키지 상세 화면 진입")
+
+            guide_name = travel_product.click_guide_chatting()
+            travel_product.logger.info("가이드 채팅 선택")
+
+            assert travel_product.is_guide_chatting_title_displayed(guide_name)
+            travel_product.logger.info("가이드 채팅 화면 진입 확인")
+
+        except Exception as e:
+            travel_product.logger.error(f"✖ 테스트 중 문제 발생: {e}")
+            travel_product.save_screenshot(request.node.name)
+            raise
+
+        finally:
+            travel_product.logger.info("[TP_08_01] 가이드 채팅 화면 진입 확인 테스트 완료")
+
+
+@pytest.mark.done
+@pytest.mark.usefixtures("login_driver")
+class TestTP09:
+    # [TP_09_02] 여행 장소 선택 후 바텀 시트 노출 확인
+    def test_TP_09_02(self, login_driver: WebDriver, request):
+        travel_product = TravelProduct(login_driver)
+
+        region = "강원"
+
+        try:
+            travel_product.click_travel_product_navigation()
+            travel_product.click_package_save_info(region)
+            travel_product.logger.info("패키지 상세 화면 진입")
+
+            name = travel_product.click_travel_course()
+            travel_product.logger.info("여행 코스 선택")
+
+            assert travel_product.is_travel_lane_bottom_sheet_displayed(name)
+            travel_product.logger.info("바텀 시트 노출 확인")
+
+        except Exception as e:
+            travel_product.logger.error(f"✖ 테스트 중 문제 발생: {e}")
+            travel_product.save_screenshot(request.node.name)
+            raise
+
+        finally:
+            travel_product.logger.info("[TP_09_02] 여행 장소 선택 후 바텀 시트 노출 확인 테스트 완료")
