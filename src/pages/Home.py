@@ -51,19 +51,26 @@ class Home(BasePage):
             self.logger.error(f"✖ 최대 시도 횟수 {max_attempts}회 내에 대상 요소를 찾지 못함")
             self.save_screenshot(f"swipe_until_element_visible_fail")
 
-    def get_post_info(self, locator):
+    # 요소의 content-desc에서 작성자, 지역, 내용 정보를 추출하여 반환
+    def get_post_info(self, locator, new = False):
         try:
-            element = self.find_element(locator)
-            content_desc = element.get_attribute("content-desc")
-            author, region, content = content_desc.split("\n")[0], content_desc.split("\n")[1], content_desc.split("\n")[3]
-            self.logger.info(f"✔ 정보 추출 성공: {author}, {region}, {content}")
+            if (new):
+                element = self.find_element(locator)
+                content_desc = element.get_attribute("content-desc")
+                author, region, content = content_desc.split("\n")
+                self.logger.info(f"✔ 정보 추출 성공: {author}, {region}, {content}")
+            else:
+                element = self.find_element(locator)
+                content_desc = element.get_attribute("content-desc")
+                author, region, content = content_desc.split("\n")[0], content_desc.split("\n")[1], content_desc.split("\n")[3]
+                self.logger.info(f"✔ 정보 추출 성공: {author}, {region}, {content}")
             return author, region, content
         except Exception as e:
             self.logger.error(f"✖ 정보 추출 실패: {e}")
             self.save_screenshot("get_like_count_fail")
             raise
 
-    # 게시글 요소의 content-desc에서 '좋아요 N개' 정보를 추출하여 정수로 반환
+    # 요소의 content-desc에서 '좋아요 N개' 정보를 추출하여 정수로 반환
     def get_like_count(self, locator):
         try:
             content_desc = self.get_attribute(locator, "content-desc")
@@ -81,6 +88,20 @@ class Home(BasePage):
             self.save_screenshot("get_like_count_fail")
             raise
 
+    # 요소의 content-desc에서 장소를 추출하여 반환
+    def get_region_tour_result_info(self, locator):
+        try:
+            element = self.find_element(locator)
+            content_desc = element.get_attribute("content-desc")
+            location, type = content_desc.split("\n")[1], content_desc.split("\n")[2]
+            self.logger.info(f"✔ 정보 추출 성공: {location}, {type}")
+            return location, type
+        except Exception as e:
+            self.logger.error(f"✖ 정보 추출 실패: {e}")
+            self.save_screenshot("get_like_count_fail")
+            raise
+
+    # 요소가 사라질 때까지 대기
     def wait_until_element_disappears(self, locator):
         try:
             self.wait.until_not(EC.presence_of_element_located(locator))
