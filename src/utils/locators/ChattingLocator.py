@@ -72,8 +72,8 @@ class BottomSheetLocators: # 바텀시트 관련 로케이터
   USER_UI_LOCS = [BACK_BTN_USER, USER_TITLE, SEARCH_INPUT_USER, SEARCH_BTN_USER]
 
   @staticmethod
-  def search_user_profile(user_name: str, email: str):
-    return (AppiumBy.XPATH, f'//android.view.View[@content-desc="{user_name} {email}"]')
+  def search_user_profile(text: str):
+    return (AppiumBy.XPATH, f'//android.view.View[contains(@content-desc, "{text}")]')
 
   @staticmethod
   def search_user_profile_share_btn(user_name: str, email: str):
@@ -81,13 +81,25 @@ class BottomSheetLocators: # 바텀시트 관련 로케이터
   
   PROFILE_SHARE_ALERT = (AppiumBy.XPATH, '//android.view.View[@content-desc="닫기"]/android.view.View/android.view.View') # 공유하기 모달창
   SHARE_ALERT_TITLE = (AppiumBy.ACCESSIBILITY_ID, '공유하기') # 공유하기 모달창 타이틀
-  SHARE_ALERT_PROFILE_PREVIEW = (AppiumBy.XPATH, '//android.view.View[@content-desc="닫기"]/android.view.View/android.view.View/android.view.View[2]') # 프로필 미리보기 모달창
+
+  @staticmethod
+  def share_alert_user_name(user_name: str):
+    return (AppiumBy.ACCESSIBILITY_ID, f'{user_name}')
+  
+  @staticmethod
+  def share_alert_email(email: str):
+    return (AppiumBy.ACCESSIBILITY_ID, f'{email}')
+
+  SHARE_ALERT_TITLE = (AppiumBy.ACCESSIBILITY_ID, '공유하기') # 공유하기 모달창 타이틀
   FROFILE_SHARE_ALERT_CANCEL_BTN = (AppiumBy.ACCESSIBILITY_ID, '취소') # 취소 버튼
   FROFILE_SHARE_ALERT_SEND_BTN = (AppiumBy.ACCESSIBILITY_ID, '보내기') # 보내기 버튼
 
-  #사용자-채팅방
+  #사용자 공유-채팅방
   PROFILE_DM_BTN = (AppiumBy.ACCESSIBILITY_ID, '1:1 채팅') # 1:1 채팅 버튼
   VIEW_PROFILE_BTN = (AppiumBy.ACCESSIBILITY_ID, '프로필 보기') # 프로필 보기 버튼
+
+  USER_SHARE_ALERT_UI_LOCS = [SHARE_ALERT_TITLE, SHARE_ALERT_TITLE, PROFILE_DM_BTN, VIEW_PROFILE_BTN, FROFILE_SHARE_ALERT_CANCEL_BTN, FROFILE_SHARE_ALERT_SEND_BTN]
+
 
   @staticmethod
   def view_profile_title(user_name: str):
@@ -139,9 +151,13 @@ class BottomSheetLocators: # 바텀시트 관련 로케이터
   PACKAGE_SHARE_ALERT_CANCEL_BTN = (AppiumBy.ACCESSIBILITY_ID, '취소') # 취소 버튼
   PACKAGE_SHARE_ALERT_SEND_BTN = (AppiumBy.ACCESSIBILITY_ID, '보내기') # 보내기 버튼
 
-  PACKAGE_ALERT_CHECK_LOCS = [PACKAGE_SHARE_ALERT_TITLE, ALERT_VIEW_PACKAGE_DETAIL_BTN, PACKAGE_SHARE_ALERT_CANCEL_BTN, PACKAGE_SHARE_ALERT_SEND_BTN]
+  PACKAGE_ALERT_UI_LOCS = [PACKAGE_SHARE_ALERT_TITLE, ALERT_VIEW_PACKAGE_DETAIL_BTN, PACKAGE_SHARE_ALERT_CANCEL_BTN, PACKAGE_SHARE_ALERT_SEND_BTN]
 
   # 패키지-채팅방
+  @staticmethod
+  def share_package_message(text: str):
+    return (AppiumBy.XPATH, f'//android.view.View[contains(@content-desc, "{text}")]')
+  
   VIEW_PACKAGE_DETAIL_BTN = (AppiumBy.ACCESSIBILITY_ID, '패키지 상세 정보 보기') # 패키지 상세보기 버튼
   VIEW_PACKAGE_DETAIL_TITLE = (AppiumBy.ACCESSIBILITY_ID, '패키지 상세') # 패키지 상세 페이지 타이틀
 
@@ -152,7 +168,10 @@ class BottomSheetLocators: # 바텀시트 관련 로케이터
   MAP_TITLE = (AppiumBy.ACCESSIBILITY_ID, '장소 검색') # 장소 검색 타이틀
   SEARCH_INPUT_MAP = (AppiumBy.XPATH, '//android.widget.EditText[@hint="장소 이름으로 검색..."]') # 장소 검색창
   SEARCH_BTN_MAP = (AppiumBy.XPATH, '//android.widget.FrameLayout[@resource-id="android:id/content"]/android.widget.FrameLayout/android.view.View/android.view.View/android.view.View/android.widget.Button') #검색 버튼
-  MAP_LIST = (AppiumBy.XPATH, '//android.widget.FrameLayout[@resource-id="android:id/content"]/android.widget.FrameLayout/android.view.View/android.view.View/android.view.View/android.view.View[1]') # 장소 빈 리스트 체크 필요
+
+  MAP_UI_LOCS = [BACK_BTN_MAP, MAP_TITLE, SEARCH_INPUT_MAP, SEARCH_BTN_MAP]
+
+  MAP_EMPTY_LIST = (AppiumBy.XPATH, '//android.widget.FrameLayout[@resource-id="android:id/content"]/android.widget.FrameLayout/android.view.View/android.view.View/android.view.View/android.view.View[2]') # 장소 빈 리스트
   MAP_SEARCH_ERROR_TOAST = (AppiumBy.ACCESSIBILITY_ID, '검색 중 오류가 발생했습니다: Exception: 위치 정보를 불러오지 못했습니다. 상태 코드: 400') # 장소 검색 오류 토스트 메시지
   MAP_SHARE_BTN = (AppiumBy.XPATH, '//android.view.View[@content-desc="광교신도시 경기도 수원시 영통구 이의동"]/android.widget.Button') # 장소 공유 버튼 재사용 가능한지 체크
 

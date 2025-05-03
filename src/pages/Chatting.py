@@ -81,10 +81,10 @@ class Chatting(BasePage):
         self.click_element(self.bottom_locs.IMAGE_ALERT_NO_BTN) # 아니오 버튼 터치
 
 
-    def search_user_input_and_btn(self, user_name, icon_locator, btn_locator):
+    def search_user_input_and_btn(self, user_name, icon_locator, input_locator, btn_locator):
         """바텀시트 아이콘 선택-> 사용자 검색창 입력-> 검색버튼 터치"""
         self.tap_bottom_icon(user_name, icon_locator)
-        self.send_keys(user_name)
+        self.send_keys(input_locator, user_name)
         self.click_element(btn_locator)
 
 
@@ -102,15 +102,15 @@ class Chatting(BasePage):
         self.click_element(self.bottom_locs.VIEW_PROFILE_BTN)
 
 
-    def search_package_input_and_btn(self, user_name, icon_locator, text, btn_locator):
+    def search_package_input_and_btn(self, user_name, icon_locator, input_locator, text, btn_locator):
         """바텀시트 아이콘 선택-> 패키지 검색창 입력-> 검색버튼 터치"""
         self.tap_bottom_icon(user_name, icon_locator)
-        self.send_keys(text)
+        self.send_keys(input_locator, text)
         self.click_element(btn_locator)
 
 
-    def package_share_alert(self, user_name, icon_locator, text, btn_locator):
-        self.search_package_input_and_btn(self, user_name, icon_locator, text, btn_locator)
+    def package_share_alert_view(self, user_name, icon_locator, input_locator, text, btn_locator):
+        self.search_package_input_and_btn(self, user_name, icon_locator, input_locator, text, btn_locator)
         self.click_element(self.bottom_locs.package_share_btn(text))
         self.find_element(self.bottom_locs.PACKAGE_SHARE_ALERT)
 
