@@ -66,14 +66,15 @@ class BottomSheetLocators: # 바텀시트 관련 로케이터
   BACK_BTN_USER = (AppiumBy.ACCESSIBILITY_ID, '뒤로') # 뒤로가기 버튼
   USER_TITLE = (AppiumBy.ACCESSIBILITY_ID, '사용자 검색') # 사용자 검색 타이틀
   SEARCH_INPUT_USER = (AppiumBy.XPATH, '//android.widget.EditText[@hint="검색"]') # 사용자 검색창
+
   SEARCH_BTN_USER = (AppiumBy.XPATH, '//android.widget.FrameLayout[@resource-id="android:id/content"]/android.widget.FrameLayout/android.view.View/android.view.View/android.view.View/android.widget.Button') # 사용자 검색 버튼
 
   USER_UI_LOCS = [BACK_BTN_USER, USER_TITLE, SEARCH_INPUT_USER, SEARCH_BTN_USER]
 
   @staticmethod
   def search_user_profile(user_name: str, email: str):
-    return (AppiumBy.ACCESSIBILITY_ID, f'"{user_name}\n{email}")]')
-  
+    return (AppiumBy.XPATH, f'//android.view.View[@content-desc="{user_name} {email}"]')
+
   @staticmethod
   def search_user_profile_share_btn(user_name: str, email: str):
     return (AppiumBy.XPATH, f'"//android.view.View[@content-desc="{user_name} {email}"]/android.widget.Button")]')
@@ -147,7 +148,6 @@ class BottomSheetLocators: # 바텀시트 관련 로케이터
 
   # 지도
   MAP_ICON = (AppiumBy.ANDROID_UIAUTOMATOR, 'new UiSelector().className("android.view.View").instance(9)')
-
   BACK_BTN_MAP = (AppiumBy.ACCESSIBILITY_ID, '뒤로') # 뒤로가기 버튼
   MAP_TITLE = (AppiumBy.ACCESSIBILITY_ID, '장소 검색') # 장소 검색 타이틀
   SEARCH_INPUT_MAP = (AppiumBy.XPATH, '//android.widget.EditText[@hint="장소 이름으로 검색..."]') # 장소 검색창

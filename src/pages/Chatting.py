@@ -2,6 +2,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
 from appium.webdriver.webdriver import WebDriver
+import time
 
 from appium.webdriver.common.appiumby import AppiumBy
 
@@ -42,14 +43,20 @@ class Chatting(BasePage):
     def tap_plus_button(self, user_name):
         """채팅방 하단 '+' 버튼 터치"""
         self.go_to_chat_room(user_name)
+        self.driver.hide_keyboard()
+        time.sleep(1) # 오류로 인해 설정
         self.click_element(self.c_room_locs.PLUS_BTN)
 
 
     def tap_bottom_icon(self, user_name, icon_locator):
         """+ 버튼 바텀시트 아이콘 터치"""
-        self.driver.hide_keyboard()
         self.tap_plus_button(user_name)
         self.click_element(icon_locator)
+
+
+    def take_photo(self):
+        self.click_element(self.bottom_locs.TAKE_PHOTO_BTN)  # 촬영
+        self.click_element(self.bottom_locs.TAKE_PHOTO_CONFIRM_BTN)  # 확인 버튼
 
 
     def take_and_send_photo_with_retry(self):

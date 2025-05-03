@@ -218,10 +218,9 @@ class TestTP08:
             raise
 
 
-@pytest.mark.blocked
+@pytest.mark.done
 @pytest.mark.usefixtures("login_driver")
 class TestTP09:
-    @pytest.mark.skip(reason='지도 아이콘만 안찾아짐..ㅡㅡ')
     def test_tp_09_01(self, login_driver: WebDriver, request): # 채팅방  '+' 바텀 시트 UI 요소 확인
         chatting = Chatting(login_driver)
         bottom_locs = BottomSheetLocators()
@@ -241,7 +240,6 @@ class TestTP09:
             raise
 
 
-    @pytest.mark.skip(reason='로컬 이미지 선택 자동화 실패')
     def test_tp_09_02(self, login_driver: WebDriver, request): # 갤러리 로컬 이미지 전송
         chatting = Chatting(login_driver)
         bottom_locs = BottomSheetLocators()
@@ -292,7 +290,7 @@ class TestTP09:
             raise
 
 
-@pytest.mark.blocked
+@pytest.mark.done
 @pytest.mark.usefixtures("login_driver")
 class TestTP10: 
     def test_tp_10_01(self, login_driver: WebDriver, request): # 카메라 촬영 이미지 전송
@@ -305,14 +303,14 @@ class TestTP10:
         try:
             chatting.tap_bottom_icon(user_name, bottom_locs.CAMERA_ICON)
 
-            chatting.click_element(bottom_locs.TAKE_PHOTO_BTN)
+            chatting.take_photo()
 
-            chatting.click_element(bottom_locs.TAKE_PHOTO_CONFIRM_BTN)
+            chatting.image_alert_yes_tap()
 
             title = chatting.find_element(cr_locs.chat_room_title(user_name))
-            assert title.is_displayed(), '✖ 채팅방 타이틀 미노출'
+            assert title.is_displayed(), '✖ 채팅방 화면 미노출'
 
-            chatting.logger.info("✔ 카메라-사진전송 후 채팅방 복귀 성공")
+            chatting.logger.info("✔ 채팅방 화면 노출 확인 ")
 
         except Exception as e:
             chatting.logger.error(f"✖ 테스트 실패: {e}")
@@ -332,10 +330,12 @@ class TestTP10:
 
             chatting.take_and_send_photo_with_retry()
 
+            chatting.image_alert_yes_tap()
+
             title = chatting.find_element(cr_locs.chat_room_title(user_name))
             assert title.is_displayed(), '✖ 채팅방 타이틀 미노출'
 
-            chatting.logger.info("✔ 카메라-재촬영 사진전송 후 채팅방 복귀 성공")
+            chatting.logger.info("✔ 카메라-재촬영 사진전송 후 채팅방 복귀 성공 - 이미지는 수동 확인 필요")
 
         except Exception as e:
             chatting.logger.error(f"✖ 테스트 실패: {e}")
@@ -353,7 +353,7 @@ class TestTP10:
         try:
             chatting.tap_bottom_icon(user_name, bottom_locs.CAMERA_ICON)
 
-            chatting.click_element(bottom_locs.LOCAL_IMAGE)
+            chatting.take_photo()
 
             chatting.image_alert_no_tap()
 
@@ -402,7 +402,7 @@ class TestTP11:
             chatting.tap_bottom_icon(user_name, bottom_locs.USER_ICON)
             chatting.click_element(bottom_locs.BACK_BTN_USER)
 
-            title = chatting.find_element(cr_locs.chat_room_title)
+            title = chatting.find_element(cr_locs.chat_room_title(user_name))
             assert title.is_displayed(), '✖ 채팅 목록으로 복귀 실패'
             
             chatting.logger.info("✔ 채팅목록 화면 노출 확인")
@@ -415,12 +415,12 @@ class TestTP11:
 
     @pytest.mark.parametrize(
     "search_key, search_value",
-        ("user_name", chat_users["user_name"]), 
+    [
+        ("user_name", chat_users["user_name"]),
         ("email", chat_users["email"])
-    )
+    ])
     def test_tp_11_03_04(self, login_driver: WebDriver, search_key: str, search_value: str, request): # 사용자 검색창 입력 테스트
         chatting = Chatting(login_driver)
-        cr_locs = ChatRoomLocator()
         bottom_locs = BottomSheetLocators()
 
         try:
