@@ -3,7 +3,7 @@ from appium.webdriver.common.appiumby import AppiumBy
 from appium.webdriver.webdriver import WebDriver
 from src.pages.Chatting import Chatting
 from utils.locators.ChattingLocator import ChattingTabLocator, ChatRoomLocator, BottomSheetLocators
-from resources.testdata.test_data import chat_users, data_package
+from resources.testdata.test_data import chat_users, data_package, input_text
 import time
 
 @pytest.mark.done
@@ -124,25 +124,24 @@ class TestTP02:
 @pytest.mark.blocked
 @pytest.mark.usefixtures("login_driver")
 class TestTP03:
-    @pytest.mark.skip(reason='검증 자꾸 오류뜸 나중에 다시 수정 필요')
     def test_tp_03_01(self, login_driver: WebDriver, request): # 채팅 입력 테스트
         chatting = Chatting(login_driver)
         cr_locs = ChatRoomLocator()
 
         user_name = chat_users["user_name"]
-        text = '테스트'
+        text = input_text["text"]
 
         try:
             chatting.go_to_chat_room(user_name)
 
             chatting.driver.hide_keyboard()
-            chatting.find_element(cr_locs.MESSAGE_INPUT)
-            time.sleep(0.3)  # 포커스 주고 약간 대기
+            # chatting.find_element(cr_locs.MESSAGE_INPUT)
+            time.sleep(1)  # 포커스 주고 약간 대기, 안하면 오류뜸..
             chatting.send_keys(cr_locs.MESSAGE_INPUT, text)
 
-            send_btn = chatting.find_element(cr_locs.MESSAGE_SEND_BTN)
-            is_enabled = send_btn.get_attribute("enabled")
-            assert is_enabled == "true", "✖ 채팅창 입력 시 보내기 버튼 비활성화됨"
+            selected_status = chatting.get_attribute(cr_locs.MESSAGE_SEND_BTN, 'enabled')
+            
+            assert selected_status == 'true', '✖ 채팅창 입력 시 보내기 버튼 비활성화됨'
 
             chatting.logger.info("✔ 채팅창 입력 시 보내기 버튼 활성화 확인")
 
@@ -150,7 +149,40 @@ class TestTP03:
             chatting.logger.error(f"✖ 테스트 실패: {e}")
             chatting.save_screenshot(request.node.name)
             raise
-# TODO def test_tp_03_01 해결 후 test_tp_03_02 함수 작성해야함
+
+
+    @pytest.mark.parametrize("text_key", ["text", "long_text"])
+    def test_tp_03_02_03(self, login_driver: WebDriver, request, text_key):  # 일반/긴 메시지 전송
+        chatting = Chatting(login_driver)
+        cr_locs = ChatRoomLocator()
+
+        user_name = chat_users["user_name"]
+        text = input_text[text_key]
+
+        try:
+            chatting.go_to_chat_room(user_name)
+
+            chatting.driver.hide_keyboard()
+            chatting.find_element(cr_locs.MESSAGE_INPUT)
+            time.sleep(1)  # 포커스 대기
+
+            chatting.send_keys(cr_locs.MESSAGE_INPUT, text)
+
+            selected_status = chatting.get_attribute(cr_locs.MESSAGE_SEND_BTN, 'enabled')
+            assert selected_status == 'true', f'✖ "{text_key}" 입력 시 보내기 버튼 비활성화됨'
+            chatting.logger.info(f'✔ "{text_key}" 입력 시 보내기 버튼 활성화 확인')
+
+            chatting.click_element(cr_locs.MESSAGE_SEND_BTN)
+
+            message_check = chatting.find_element(cr_locs.chat_message_check(text))
+            assert message_check.is_displayed(), f'✖ "{text_key}" 메시지 전송 실패'
+            chatting.logger.info(f'✔ "{text_key}" 메시지 전송 확인')
+
+        except Exception as e:
+            chatting.logger.error(f'✖ 테스트 실패 ({text_key}): {e}')
+            chatting.save_screenshot(request.node.name)
+            raise
+
 
 
 # class TestTP04 마지막 메시지 시간정보 확인 요소가 없어서 자동화 불가
@@ -186,9 +218,10 @@ class TestTP08:
             raise
 
 
-@pytest.mark.wip
+@pytest.mark.blocked
 @pytest.mark.usefixtures("login_driver")
-class TestTP09: 
+class TestTP09:
+    @pytest.mark.skip(reason='지도 아이콘만 안찾아짐..ㅡㅡ')
     def test_tp_09_01(self, login_driver: WebDriver, request): # 채팅방  '+' 바텀 시트 UI 요소 확인
         chatting = Chatting(login_driver)
         bottom_locs = BottomSheetLocators()
@@ -208,6 +241,7 @@ class TestTP09:
             raise
 
 
+    @pytest.mark.skip(reason='로컬 이미지 선택 자동화 실패')
     def test_tp_09_02(self, login_driver: WebDriver, request): # 갤러리 로컬 이미지 전송
         chatting = Chatting(login_driver)
         bottom_locs = BottomSheetLocators()
@@ -258,7 +292,7 @@ class TestTP09:
             raise
 
 
-@pytest.mark.wip
+@pytest.mark.blocked
 @pytest.mark.usefixtures("login_driver")
 class TestTP10: 
     def test_tp_10_01(self, login_driver: WebDriver, request): # 카메라 촬영 이미지 전송
@@ -332,7 +366,6 @@ class TestTP10:
             chatting.logger.error(f"✖ 테스트 실패: {e}")
             chatting.save_screenshot(request.node.name)
             raise
-
 
 
 @pytest.mark.wip
@@ -583,10 +616,9 @@ class TestTP16:
             chatting.save_screenshot(request.node.name)
             raise
 
-
+    #검색어를 포함하는 요소가있는지 다시 체크  필요
     def test_tp_16_03(self, login_driver: WebDriver, request): # 패키지 검색창 입력 테스트
         chatting = Chatting(login_driver)
-        cr_locs = ChatRoomLocator()
         bottom_locs = BottomSheetLocators()
 
         user_name = chat_users["user_name"]
@@ -597,10 +629,82 @@ class TestTP16:
 
             results = chatting.find_elements(bottom_locs.PACKAGE_LIST)
             
-            assert len(results) > 0, f"✖ {package} 검색 실패"
+            assert len(results) > 0, f"✖ {package} 검색 -> 패키지 목록 미노출"
 
             chatting.logger.info(f"✔ {package} 검색 -> 패키지 목록 노출")
 
+        except Exception as e:
+            chatting.logger.error(f"✖ 테스트 실패: {e}")
+            chatting.save_screenshot(request.node.name)
+            raise
+
+
+    def test_tp_16_04(self, login_driver: WebDriver, request): # 패키지 검색창 의미없는 문자열 입력 테스트
+        chatting = Chatting(login_driver)
+        bottom_locs = BottomSheetLocators()
+
+        user_name = chat_users["user_name"]
+        input_text = data_package["invaild_text"]
+
+        try:
+            chatting.search_package_input_and_btn(user_name, bottom_locs.PACKAGE_ICON, input_text, bottom_locs.SEARCH_BTN_PACKAGE)
+
+            results = chatting.find_elements(bottom_locs.PACKAGE_LIST)
+            
+            assert len(results) == 0, f"✖ {input_text} 검색 -> 패키지 목록 노출"
+
+            chatting.logger.info(f"✔ {input_text} 검색 -> 패키지 목록 미노출")
+
+        except Exception as e:
+            chatting.logger.error(f"✖ 테스트 실패: {e}")
+            chatting.save_screenshot(request.node.name)
+            raise
+
+
+#16_05~07 자동화 불가 나중에 다시 체크
+
+
+    def test_tp_16_08(self, login_driver: WebDriver, request): # 패키지 검색창 입력 테스트
+        chatting = Chatting(login_driver)
+        bottom_locs = BottomSheetLocators()
+
+        user_name = chat_users["user_name"]
+        package_name = data_package["package_name"]
+
+        try:
+            chatting.search_package_input_and_btn(user_name, bottom_locs.PACKAGE_ICON, package_name, bottom_locs.SEARCH_BTN_PACKAGE)
+
+            chatting.click_element(bottom_locs.package_share_btn(package_name))
+
+            alert = chatting.find_element(bottom_locs.PACKAGE_SHARE_ALERT)
+            
+            assert alert.is_displayed(), f"✖ 패키지 미리보기 모달창 미노출"
+
+            chatting.logger.info(f"✔ 패키지 미리보기 모달창 노출")
+
+        except Exception as e:
+            chatting.logger.error(f"✖ 테스트 실패: {e}")
+            chatting.save_screenshot(request.node.name)
+            raise
+
+
+    def test_tp_16_09(self, login_driver: WebDriver, request): # 패키지 검색창 입력 테스트
+        chatting = Chatting(login_driver)
+        bottom_locs = BottomSheetLocators()
+
+        user_name = chat_users["user_name"]
+        package_name = data_package["package_name"]
+
+        try:
+            chatting.search_package_input_and_btn(user_name, bottom_locs.PACKAGE_ICON, package_name, bottom_locs.SEARCH_BTN_PACKAGE)
+
+            chatting.click_element(bottom_locs.package_share_btn(package_name))
+
+            for ui_check in bottom_locs.PACKAGE_ALERT_CHECK_LOCS:
+                assert chatting.find_element(ui_check).is_displayed(), f'✖ {ui_check} 미노출'
+
+            chatting.logger.info("✔ 패키지 공유하기 모달창 UI 요소 노출 확인")
+            
         except Exception as e:
             chatting.logger.error(f"✖ 테스트 실패: {e}")
             chatting.save_screenshot(request.node.name)

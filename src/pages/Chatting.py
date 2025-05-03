@@ -47,6 +47,7 @@ class Chatting(BasePage):
 
     def tap_bottom_icon(self, user_name, icon_locator):
         """+ 버튼 바텀시트 아이콘 터치"""
+        self.driver.hide_keyboard()
         self.tap_plus_button(user_name)
         self.click_element(icon_locator)
 
@@ -74,7 +75,7 @@ class Chatting(BasePage):
 
 
     def search_user_input_and_btn(self, user_name, icon_locator, btn_locator):
-        """아이콘 선택-> 사용자 검색창 입력-> 검색버튼 터치"""
+        """바텀시트 아이콘 선택-> 사용자 검색창 입력-> 검색버튼 터치"""
         self.tap_bottom_icon(user_name, icon_locator)
         self.send_keys(user_name)
         self.click_element(btn_locator)
@@ -94,12 +95,31 @@ class Chatting(BasePage):
         self.click_element(self.bottom_locs.VIEW_PROFILE_BTN)
 
 
-    def search_package_input_and_btn(self, user_name, icon_locator, package, btn_locator):
-        """아이콘 선택-> 패키지 검색창 입력-> 검색버튼 터치"""
+    def search_package_input_and_btn(self, user_name, icon_locator, text, btn_locator):
+        """바텀시트 아이콘 선택-> 패키지 검색창 입력-> 검색버튼 터치"""
         self.tap_bottom_icon(user_name, icon_locator)
-        self.send_keys(package)
+        self.send_keys(text)
         self.click_element(btn_locator)
 
+
+    def package_share_alert(self, user_name, icon_locator, text, btn_locator):
+        self.search_package_input_and_btn(self, user_name, icon_locator, text, btn_locator)
+        self.click_element(self.bottom_locs.package_share_btn(text))
+        self.find_element(self.bottom_locs.PACKAGE_SHARE_ALERT)
+
+
+    def package_alert_send_tap(self, user_name, icon_locator, text, btn_locator):
+        """패키지 공유하기 모달창에서 '보내기' 터치"""
+        self.search_package_input_and_btn(user_name, user_name, icon_locator, text, btn_locator)
+        self.click_element(self.bottom_locs.package_share_btn(text))
+        self.click_element(self.bottom_locs.PACKAGE_SHARE_ALERT_SEND_BTN) # 보내기 버튼 터치
+
+
+    def package_alert_cancle_tap(self, user_name, icon_locator, text, btn_locator):
+        """패키지 공유하기 모달창에서 '취소' 터치"""
+        self.search_package_input_and_btn(user_name, user_name, icon_locator, text, btn_locator)
+        self.click_element(self.bottom_locs.package_share_btn(text))
+        self.click_element(self.bottom_locs.PACKAGE_SHARE_ALERT_SEND_BTN) # 보내기 버튼 터치
 
 
     #스와이프 관련 함수.. 임포트가 안돼서 작동안함..

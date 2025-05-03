@@ -19,13 +19,19 @@ class ChatRoomLocator: # 채팅방 관련
 
   #채팅방 UI 요소
   BACK_BTN = (AppiumBy.ACCESSIBILITY_ID, '뒤로') # 뒤로가기 버튼
-  PLUS_BTN = (AppiumBy.ANDROID_UIAUTOMATOR, 'new UiSelector().className("android.widget.Button").instance(3)') # + 버튼
+  # PLUS_BTN = (AppiumBy.ANDROID_UIAUTOMATOR, 'new UiSelector().className("android.widget.Button").instance(3)') # + 버튼
+  PLUS_BTN = (AppiumBy.XPATH, '//android.widget.FrameLayout[@resource-id="android:id/content"]/android.widget.FrameLayout/android.view.View/android.view.View/android.view.View/android.widget.Button[1]') # + 버튼
+
 
   #MESSAGE_INPUT = (AppiumBy.XPATH, '//android.widget.EditText[@hint="메시지를 입력하세요..."]') # 메세지 입력창
   MESSAGE_INPUT = (AppiumBy.CLASS_NAME, 'android.widget.EditText') # 메세지 입력창
 
   MESSAGE_SEND_BTN = (AppiumBy.XPATH, '//android.widget.FrameLayout[@resource-id="android:id/content"]/android.widget.FrameLayout/android.view.View/android.view.View/android.view.View/android.widget.Button[2]') # 메세지 보내기 버튼
 
+  @staticmethod
+  def chat_message_check(text: str): # 전송한 메시지 확인
+    return (AppiumBy.XPATH, f'//android.view.View[contains(@content-desc, "{text}")]')
+  
   UI_CHECK_LOCS = [BACK_BTN, PLUS_BTN, MESSAGE_INPUT, MESSAGE_SEND_BTN] 
 
 
@@ -40,7 +46,7 @@ class BottomSheetLocators: # 바텀시트 관련 로케이터
   
   # 갤러리
   GALLERY_ICON = (AppiumBy.ANDROID_UIAUTOMATOR, 'new UiSelector().className("android.view.View").instance(5)') # 갤러리 아이콘
-  LOCAL_IMAGE = (AppiumBy.XPATH, '(//android.widget.ImageView[@resource-id="com.google.android.providers.media.module:id/icon_thumbnail"])[1]') # 로컬 이미지 중 첫번째
+  LOCAL_IMAGE = (AppiumBy.ANDROID_UIAUTOMATOR, 'new UiSelector().resourceId("com.google.android.providers.media.module:id/icon_thumbnail").instance(0)') # 로컬 이미지 중 첫번째
   IMAGE_ALERT = (AppiumBy.XPATH, '//android.view.View[@content-desc="닫기"]/android.view.View/android.view.View') # 사진 보내기 모달창
   IMAGE_ALERT_TITLE = (AppiumBy.ACCESSIBILITY_ID, '사진 보내기') # 사진 보내기 모달창 타이틀
   IMAGE_ALERT_YES_BTN = (AppiumBy.ACCESSIBILITY_ID, '예') # 예 버튼
@@ -96,15 +102,43 @@ class BottomSheetLocators: # 바텀시트 관련 로케이터
 
   PACKAGE_UI_LOCS = [BACK_BTN_PACKAGE, PACKAGE_TITLE, SEARCH_INPUT_PACKAGE, SEARCH_BTN_PACKAGE]
 
-  PACKAGE_LIST = (AppiumBy.XPATH, '//android.widget.FrameLayout[@resource-id="android:id/content"]/android.widget.FrameLayout/android.view.View/android.view.View/android.view.View/android.view.View[2]') #패키지 리스트 인데 하나 뽑아올수있을지 체크
+  PACKAGE_LIST = (AppiumBy.XPATH, '//android.widget.FrameLayout[@resource-id="android:id/content"]/android.widget.FrameLayout/android.view.View/android.view.View/android.view.View/android.view.View[2]/android.view.View') #패키지 리스트
 
   PACKAGE_EMPTY_LIST = (AppiumBy.XPATH, '//android.widget.FrameLayout[@resource-id="android:id/content"]/android.widget.FrameLayout/android.view.View/android.view.View/android.view.View/android.view.View[1]') #패키지 빈 리스트 체크 필요
 
-  PACKAGE_SHARE_BTN = (AppiumBy.XPATH, '//android.widget.ImageView[@content-desc="빵덕후 가격: 5580.0원 가이드: 사용자 A"]/android.widget.Button') # 패키지 공유 버튼 재사용 가능한지 체크
+  @staticmethod
+  def package_share_btn(package_name: str = None, price: str = None, guide_name: str = None):
+    """
+    공유 버튼을 찾기 위한 XPath 생성 함수 (패키지명, 가격, 가이드명 중 아무거나 조합 가능)
+
+    :param package_name: 패키지 이름 (선택)
+    :param price: 가격 (선택)
+    :param guide_name: 가이드 이름 (선택)
+    :return: (By 전략, XPath 문자열)
+    :raises ValueError: 조건이 하나도 없을 경우
+    """
+    conditions = []
+
+    if package_name:
+        conditions.append(f'contains(@content-desc, "{package_name}")')
+    if price:
+        conditions.append(f'contains(@content-desc, "가격: {price}")')
+    if guide_name:
+        conditions.append(f'contains(@content-desc, "가이드: {guide_name}")')
+
+    if not conditions:
+        raise ValueError("XPath를 생성하려면 최소한 하나 이상의 인자를 입력해야 합니다.")
+
+    xpath = f'//android.widget.ImageView[{" and ".join(conditions)}]'
+    return (AppiumBy.XPATH, xpath)
+
   PACKAGE_SHARE_ALERT = (AppiumBy.XPATH, '//android.view.View[@content-desc="닫기"]/android.view.View/android.view.View') # 공유하기 모달창
+  PACKAGE_SHARE_ALERT_TITLE = (AppiumBy.ACCESSIBILITY_ID, '공유하기') # 공유하기 모달창 타이틀
   ALERT_VIEW_PACKAGE_DETAIL_BTN = (AppiumBy.ACCESSIBILITY_ID, '패키지 상세 정보 보기') # 공유하기 모달창 상세보기 버튼
   PACKAGE_SHARE_ALERT_CANCEL_BTN = (AppiumBy.ACCESSIBILITY_ID, '취소') # 취소 버튼
   PACKAGE_SHARE_ALERT_SEND_BTN = (AppiumBy.ACCESSIBILITY_ID, '보내기') # 보내기 버튼
+
+  PACKAGE_ALERT_CHECK_LOCS = [PACKAGE_SHARE_ALERT_TITLE, ALERT_VIEW_PACKAGE_DETAIL_BTN, PACKAGE_SHARE_ALERT_CANCEL_BTN, PACKAGE_SHARE_ALERT_SEND_BTN]
 
   # 패키지-채팅방
   VIEW_PACKAGE_DETAIL_BTN = (AppiumBy.ACCESSIBILITY_ID, '패키지 상세 정보 보기') # 패키지 상세보기 버튼
@@ -113,6 +147,7 @@ class BottomSheetLocators: # 바텀시트 관련 로케이터
 
   # 지도
   MAP_ICON = (AppiumBy.ANDROID_UIAUTOMATOR, 'new UiSelector().className("android.view.View").instance(9)')
+
   BACK_BTN_MAP = (AppiumBy.ACCESSIBILITY_ID, '뒤로') # 뒤로가기 버튼
   MAP_TITLE = (AppiumBy.ACCESSIBILITY_ID, '장소 검색') # 장소 검색 타이틀
   SEARCH_INPUT_MAP = (AppiumBy.XPATH, '//android.widget.EditText[@hint="장소 이름으로 검색..."]') # 장소 검색창
