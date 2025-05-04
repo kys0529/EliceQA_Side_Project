@@ -41,3 +41,8 @@ REGISTER_BTN = (AppiumBy.XPATH, '//android.widget.Button[@content-desc="회원�
 EMAIL_AUTH_POPUP = (AppiumBy.ACCESSIBILITY_ID, "이메일 인증 필요")
 EMAIL_AUTH_POPUP_TEXT = (AppiumBy.ACCESSIBILITY_ID, "이메일로 전송된 링크로 인증 하십시오.")
 EMAIL_AUTH_POPUP_COMPLETE_BTN = (AppiumBy.ACCESSIBILITY_ID, "인증 완료")
+EMAIL_AUTH_COMPLETE = (AppiumBy.ACCESSIBILITY_ID, "이메일 인증이 완료되었습니다.")
+
+# 📌 탈퇴
+WITHDRAW_BTN = (AppiumBy.ACCESSIBILITY_ID, "탈퇴")
+COMPLETE_POPUP = (AppiumBy.ACCESSIBILITY_ID, "회원 탈퇴가 완료되었습니다.")
