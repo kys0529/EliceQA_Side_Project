@@ -3,7 +3,8 @@ from appium.webdriver.webdriver import WebDriver
 
 from src.pages.Home import Home
 from src.utils.locators import HomeLocator
-from src.utils.locators.TravelProductLocator import TravelProductListLocator
+from src.utils.locators.TravelProductLocator import TravelProductListLocator, TravelProductDetailLocator
+from src.utils.locators.MyPageLocator import MypageProfile
 
 @pytest.mark.done
 @pytest.mark.usefixtures("login_driver")
@@ -83,71 +84,74 @@ class TestHP02:
             home.save_screenshot(request.node.name)
             raise
 
-# TODO: TestHP03(예약 패키지 D-day 위젯)는 추후 구현
-
-# TODO: TestHP04(전국 날씨 위젯)는 추후 구현
-
-@pytest.mark.blocked
+@pytest.mark.done
 @pytest.mark.usefixtures("login_driver")
 class TestHP05:
-    # def test_hp_05_01(self, login_driver: WebDriver, request): # 인기 관광지 혼잡도의 지역 가로 스크롤 확인
-    #     try:
-    #         home = Home(login_driver) 
-
-    #         scroll_element = home.find_element(HomeLocator.CONGESTION_REGIONS_BAR)
-    #         home.swipe_until_element_visible(scroll_element, HomeLocator.CONGESTION_JEJU_BTN, "left", 0.5)
-
-    #         assert home.find_element(HomeLocator.CONGESTION_JEJU_BTN).is_displayed()
-
-    #         home.logger.info("인기 관광지 혼잡도의 지역 가로 스크롤 확인")
-    #     except Exception as e:
-    #         home.logger.error(f"테스트 실패: {e}")
-    #         home.save_screenshot(request.node.name)
-    #         raise
-
-    # def test_hp_05_02(self, login_driver: WebDriver, request): # 인기 관광지 혼잡도의 관광지 가로 스크롤 확인
-    #     try:
-    #         home = Home(login_driver) 
-
-    #         before_swipe = home.get_attribute(HomeLocator.CONGESTION_FIRST_RESULT, "content-desc")
-    #         results_bar = home.find_element(HomeLocator.CONGESTION_RESULTS_BAR)
-    #         home.swipe_element(results_bar, "left", 1.0)
-    #         after_swipe = home.get_attribute(HomeLocator.CONGESTION_FIRST_RESULT, "content-desc")
-
-    #         assert before_swipe != after_swipe
-
-    #         home.logger.info("인기 관광지 혼잡도의 지역 가로 스크롤 확인")
-    #     except Exception as e:
-    #         home.logger.error(f"테스트 실패: {e}")
-    #         home.save_screenshot(request.node.name)
-    #         raise
-
-    # TODO: test_hp_05_03(인기 관광지 혼잡도 새로고침)은 추후 구현
-
-    def test_hp_05_04(self, login_driver: WebDriver, request): # 인기 관광지 혼잡도의 지역 필터 중 '전체' 필터 확인
+    def test_hp_05_01(self, login_driver: WebDriver, request): # 인기 관광지 혼잡도의 지역 가로 스크롤 확인
         try:
-            home = Home(login_driver)
+            home = Home(login_driver) 
 
-            home.click_element(HomeLocator.CONGESTION_ALL_BTN)
-            # TODO: 전체 필터 결과는 어떻게 검증하면 좋을까?
+            scroll_element = home.find_element(HomeLocator.CONGESTION_REGIONS_BAR)
+            home.swipe_until_element_visible(scroll_element, HomeLocator.CONGESTION_JEJU_BTN, "left", 0.5)
+
+            assert home.find_element(HomeLocator.CONGESTION_JEJU_BTN).is_displayed()
+
+            home.logger.info("인기 관광지 혼잡도의 지역 가로 스크롤 확인")
         except Exception as e:
             home.logger.error(f"테스트 실패: {e}")
             home.save_screenshot(request.node.name)
             raise
-    
-    # TODO: test_hp_05_04 ~ 14는 "데이터를 불러오는데 실패했습니다" 오류로 잠시 중단
-    # test_hp_05_05 ~ test_hp_05_14
-    @pytest.mark.parametrize("locator, region_name", [
-        (HomeLocator.CONGESTION_SEOUL_BTN, "서울"),
-        (HomeLocator.CONGESTION_BUSAN_BTN, "부산"),
-        (HomeLocator.CONGESTION_DAEGU_BTN, "대구"),
-        (HomeLocator.CONGESTION_INCHEON_BTN, "인천"),
-        (HomeLocator.CONGESTION_GWANGJU_BTN, "광주"),
-        (HomeLocator.CONGESTION_DAEJEON_BTN, "대전"),
-        (HomeLocator.CONGESTION_ULSAN_BTN, "울산"),
-        (HomeLocator.CONGESTION_GYEONGGI_BTN, "경기"),
-        (HomeLocator.CONGESTION_GANGWON_BTN, "강원"),
-        (HomeLocator.CONGESTION_JEJU_BTN, "제주")
+
+    def test_hp_05_02(self, login_driver: WebDriver, request): # 인기 관광지 혼잡도의 관광지 가로 스크롤 확인
+        try:
+            home = Home(login_driver) 
+
+            before_swipe = home.get_attribute(HomeLocator.CONGESTION_FIRST_RESULT, "content-desc")
+            scroll_element = home.find_element(HomeLocator.CONGESTION_RESULTS_BAR)
+            home.swipe_element(scroll_element, "left", 1.0)
+            after_swipe = home.get_attribute(HomeLocator.CONGESTION_FIRST_RESULT, "content-desc")
+
+            assert before_swipe != after_swipe
+
+            home.logger.info("인기 관광지 혼잡도의 지역 가로 스크롤 확인")
+        except Exception as e:
+            home.logger.error(f"테스트 실패: {e}")
+            home.save_screenshot(request.node.name)
+            raise
+
+    # TODO: test_hp_05_03(인기 관광지 혼잡도 새로고침)은 추후 구현
+
+    @pytest.mark.parametrize("expected_regions", [
+        ["서울", "부산", "대구", "인천", "광주", "대전", "울산", "경기", "강원", "제주"]
+    ])
+    def test_hp_05_04(self, login_driver: WebDriver, expected_regions, request): # 인기 관광지 혼잡도의 지역 필터 중 '전체' 필터 확인
+        try:
+            home = Home(login_driver)
+            home.wait_until_weather_widget_loaded()
+
+            scroll_element = home.find_element(HomeLocator.CONGESTION_RESULTS_BAR)
+            for i in range(3):
+                first_result_desc = home.get_attribute(HomeLocator.CONGESTION_FIRST_RESULT, "content-desc")
+                home.swipe_element(scroll_element, "left", 0.3)
+                assert any(region in first_result_desc for region in expected_regions)
+
+            home.logger.info("인기 관광지 혼잡도의 지역 필터 중 '전체' 필터 확인")
+        except Exception as e:
+            home.logger.error(f"테스트 실패: {e}")
+            home.save_screenshot(request.node.name)
+            raise
+
+    @pytest.mark.parametrize("locator, region_name", [ 
+        (HomeLocator.CONGESTION_SEOUL_BTN, "서울"), # test_hp_05_05
+        (HomeLocator.CONGESTION_BUSAN_BTN, "부산"), # test_hp_05_06
+        (HomeLocator.CONGESTION_DAEGU_BTN, "대구"), # test_hp_05_07
+        (HomeLocator.CONGESTION_INCHEON_BTN, "인천"), # test_hp_05_08
+        (HomeLocator.CONGESTION_GWANGJU_BTN, "광주"), # test_hp_05_09
+        (HomeLocator.CONGESTION_DAEJEON_BTN, "대전"), # test_hp_05_10
+        (HomeLocator.CONGESTION_ULSAN_BTN, "울산"), # test_hp_05_11
+        (HomeLocator.CONGESTION_GYEONGGI_BTN, "경기"), # test_hp_05_12
+        (HomeLocator.CONGESTION_GANGWON_BTN, "강원"), # test_hp_05_13
+        (HomeLocator.CONGESTION_JEJU_BTN, "제주") # test_hp_05_14
     ])
     def test_hp_05_05(self, login_driver: WebDriver, locator, region_name, request): # 인기 관광지 혼잡도의 지역 필터 중 '서울/부산/대구/인천/광주/대전/울산/경기/강원/제주' 필터 확인
         try:
@@ -160,6 +164,8 @@ class TestHP05:
 
             if (region_name != "강원"): # 강원은 인기 관광지 혼잡도 결과가 존재 X
                 assert region_name in home.get_attribute(HomeLocator.CONGESTION_FIRST_RESULT, "content-desc")
+
+            home.logger.info(f"인기 관광지 혼잡도의 지역 필터 중 {region_name} 필터 확인")
         except Exception as e:
             home.logger.error(f"테스트 실패: {e}")
             home.save_screenshot(request.node.name)
@@ -174,7 +180,7 @@ class TestHP06:
             list_locators = TravelProductListLocator()
 
             home.click_element(HomeLocator.POPULAR_COURSE_MORE)
-            for element in list_locators.UI_CHECK_ELEMENT:
+            for element in list_locators.UI_CHECK_ELEMENTS:
                 assert home.find_element(element).is_displayed()
 
             home.logger.info(f"'지금 인기있는 여행코스는?'의 [더보기] 버튼 클릭 시, 여행상품 탭 정상 진입 확인 및 주요 UI 노출 확인")
@@ -182,8 +188,6 @@ class TestHP06:
             home.logger.error(f"테스트 실패: {e}")
             home.save_screenshot(request.node.name)
             raise
-
-# TODO: TestHP07(알림 기능)은 추후 구현
 
 @pytest.mark.done
 @pytest.mark.usefixtures("login_driver")
@@ -202,7 +206,24 @@ class TestHP08:
             home.save_screenshot(request.node.name)
             raise
 
-# TODO: TestHP09는 추후 구현 (패키지 상세 페이지 요소 정의 X)
+@pytest.mark.done
+@pytest.mark.usefixtures("login_driver")
+class TestHP09:
+    def test_hp_09_01(self, login_driver: WebDriver, request): # 패키지 클릭 시, 선택된 패키지의 상세 페이지 정상 진입 확인 및 주요 UI 노출 확인
+        try:
+            home = Home(login_driver)
+            list_locators = TravelProductDetailLocator()
+
+            home.click_element(HomeLocator.TRAVEL_RECOMM_BTN)
+            home.click_element(HomeLocator.TRAVEL_RECOMM_FIRST_RESULT)
+            for element in list_locators.UI_CHECK_ELEMENTS:
+                assert home.find_element(element).is_displayed()
+
+            home.logger.info(f"패키지 클릭 시, 선택된 패키지의 상세 페이지 정상 진입 확인 및 주요 UI 노출 확인")
+        except Exception as e:
+            home.logger.error(f"테스트 실패: {e}")
+            home.save_screenshot(request.node.name)
+            raise
 
 @pytest.mark.done
 @pytest.mark.usefixtures("login_driver")
@@ -221,7 +242,26 @@ class TestHP10:
             home.save_screenshot(request.node.name)
             raise
 
-# TODO: TestHP11는 추후 구현 (가이드 프로필 페이지 요소 정의 X)
+@pytest.mark.done
+@pytest.mark.usefixtures("login_driver")
+class TestHP11:
+    def test_hp_11_01(self, login_driver: WebDriver, request): # 가이드 선택 시, 가이드 프로필 페이지 정상 진입 확인 및 주요 UI 노출 확인
+        try:
+            home = Home(login_driver)
+            myPageProfile = MypageProfile()
+
+            home.click_element(HomeLocator.GUIDE_RANK_BTN)
+            home.click_element(HomeLocator.GUIDE_RANK_FIRST_RESULT)
+            
+            assert home.find_element(myPageProfile.PROFILE_MORE).is_displayed()
+            assert home.find_element(myPageProfile.PROFILE_GUIDE_PAKAGE_TITLE).is_displayed()
+            assert home.find_element(myPageProfile.PROFILE_GUIDE_PAKAGE_SECTION).is_displayed()
+
+            home.logger.info(f"가이드 선택 시, 가이드 프로필 페이지 정상 진입 확인 및 주요 UI 노출 확인")
+        except Exception as e:
+            home.logger.error(f"테스트 실패: {e}")
+            home.save_screenshot(request.node.name)
+            raise
 
 @pytest.mark.done
 @pytest.mark.usefixtures("login_driver")
@@ -240,36 +280,68 @@ class TestHP12:
             home.save_screenshot(request.node.name)
             raise
 
-@pytest.mark.blocked
+@pytest.mark.done
 @pytest.mark.usefixtures("login_driver")
 class TestHP13:
-    # TODO: test_hp_13_01 ~ 05는 데이터 로딩 오류로 잠시 중단
-    # test_hp_13_01 ~ test_hp_13_05
-    @pytest.mark.parametrize("city, district, filter", [
-        (HomeLocator.REGION_TOUR_CITY_DAEGU, HomeLocator.REGION_TOUR_DISTRICT_BUKGU, HomeLocator.REGION_TOUR_ALL_BTN),
-        (HomeLocator.REGION_TOUR_CITY_DAEGU, HomeLocator.REGION_TOUR_DISTRICT_BUKGU, HomeLocator.REGION_TOUR_ATTRACTION_BTN),
-        (HomeLocator.REGION_TOUR_CITY_DAEGU, HomeLocator.REGION_TOUR_DISTRICT_BUKGU, HomeLocator.REGION_TOUR_FOOD_BTN),
-        (HomeLocator.REGION_TOUR_CITY_DAEGU, HomeLocator.REGION_TOUR_DISTRICT_BUKGU, HomeLocator.REGION_TOUR_STAY_BTN)
+    @pytest.mark.parametrize("city, district, filter, expected_city, expected_district, expected_filter", [
+        (HomeLocator.REGION_TOUR_CITY_DAEGU, HomeLocator.REGION_TOUR_DISTRICT_BUKGU, HomeLocator.REGION_TOUR_ALL_BTN, "대구", "북구", "전체"), # test_hp_13_02
+        (HomeLocator.REGION_TOUR_CITY_DAEGU, HomeLocator.REGION_TOUR_DISTRICT_BUKGU, HomeLocator.REGION_TOUR_ATTRACTION_BTN, "대구", "북구", "관광지"), # test_hp_13_03
+        (HomeLocator.REGION_TOUR_CITY_DAEGU, HomeLocator.REGION_TOUR_DISTRICT_BUKGU, HomeLocator.REGION_TOUR_FOOD_BTN, "대구", "북구", "음식"), # test_hp_13_04
+        (HomeLocator.REGION_TOUR_CITY_DAEGU, HomeLocator.REGION_TOUR_DISTRICT_BUKGU, HomeLocator.REGION_TOUR_STAY_BTN, "대구", "북구", "숙박") # test_hp_13_05
     ])
-    def test_hp_13_01(self, login_driver: WebDriver, city, district, filter, request):
+    def test_hp_13_02(self, login_driver: WebDriver, city, district, filter, expected_city, expected_district, expected_filter, request): # 선택된 시/도, 시/군/구, 장소 유형과 관련된 장소 리스트 노출 확인
         try:
             home = Home(login_driver)
 
+            home.click_element(HomeLocator.REGION_TOUR_BTN)
             home.click_element(HomeLocator.REGION_TOUR_CITY_DROPDOWN)
             home.click_element(city)
             home.click_element(HomeLocator.REGION_TOUR_DISTRICT_DROPDOWN)
             home.click_element(district)
             home.click_element(filter)
 
-            # TODO: 데이터 로딩 오류 해결되면 결과 리스트 검증 로직 추가
+            if expected_filter != "전체":
+                location, type = home.get_region_tour_result_info(HomeLocator.REGION_TOUR_FIRST_RESULT)
+                assert expected_city in location and expected_district in location and type in expected_filter
+            else:
+                expected_types = ["관광지", "음식", "숙박"]
+                scroll_element = home.find_element(HomeLocator.REGION_TOUR_RESULTS)
+                for i in range(3):
+                    location, type = home.get_region_tour_result_info(HomeLocator.REGION_TOUR_FIRST_RESULT)
+                    home.swipe_element(scroll_element, "up", 0.3)
+                    assert expected_city in location and expected_district in location and any(expected_type in type for expected_type in expected_types)
 
-            home.logger.info(f"선택된 시/도, 시/군/구와 관련된 장소 리스트 노출 확인")
+            home.logger.info(f"{expected_city}, {expected_district}, {expected_filter}와 관련된 장소 리스트 노출 확인")
         except Exception as e:
             home.logger.error(f"테스트 실패: {e}")
             home.save_screenshot(request.node.name)
             raise
 
-# TODO: TestHP14는 추후 구현 (TestHP13이 데이터 로딩 오류로 보류 상태)
+@pytest.mark.done
+@pytest.mark.usefixtures("login_driver")
+class TestHP14:
+    @pytest.mark.parametrize("city, district, filter", [
+        (HomeLocator.REGION_TOUR_CITY_DAEGU, HomeLocator.REGION_TOUR_DISTRICT_BUKGU, HomeLocator.REGION_TOUR_ALL_BTN), 
+    ])
+    def test_hp_14_01(self, login_driver: WebDriver, city, district, filter, request): # 장소 리스트 중 가장 상단에 위치한 장소 선택 시, 네이버 지도로 이동
+        try:
+            home = Home(login_driver)
+
+            home.click_element(HomeLocator.REGION_TOUR_BTN)
+            home.click_element(HomeLocator.REGION_TOUR_CITY_DROPDOWN)
+            home.click_element(city)
+            home.click_element(HomeLocator.REGION_TOUR_DISTRICT_DROPDOWN)
+            home.click_element(district)
+            home.click_element(filter)
+            home.click_element(HomeLocator.REGION_TOUR_FIRST_RESULT)
+
+            assert home.find_element(HomeLocator.REGION_TOUR_NAVER_MAP_TITLE).is_displayed()
+
+            home.logger.info(f"장소 리스트 중 가장 상단에 위치한 장소 선택 시, 네이버 지도로 이동")
+        except Exception as e:
+            home.logger.error(f"테스트 실패: {e}")
+            home.save_screenshot(request.node.name)
+            raise
 
 @pytest.mark.done
 @pytest.mark.usefixtures("login_driver")
@@ -367,7 +439,6 @@ class TestHP16:
             home.click_element(HomeLocator.TRAVEL_GALLERY_BTN)
             home.click_element(HomeLocator.TRAVEL_GALLERY_FIRST_RESULT_COMMENT_BTN)
 
-            home.click_element(HomeLocator.TRAVEL_GALLERY_COMMENT_INPUT)
             home.send_keys(HomeLocator.TRAVEL_GALLERY_COMMENT_INPUT, comment)
             home.click_element(HomeLocator.TRAVEL_GALLERY_COMMENT_SEND_BTN)
 
@@ -448,46 +519,123 @@ class TestHP17:
             home.save_screenshot(request.node.name)
             raise
 
-@pytest.mark.wip
+@pytest.mark.done
 @pytest.mark.usefixtures("login_driver")
 class TestHP18:
-    # def test_hp_18_01(self, login_driver: WebDriver, request): # [새 게시물 추가] 버튼 클릭 시, 새 게시물 페이지 정상 진입 확인 및 주요 UI 노출 확인
-    #     try:
-    #         home = Home(login_driver)
-
-    #         home.click_element(HomeLocator.TRAVEL_GALLERY_BTN)
-    #         home.click_element(HomeLocator.TRAVEL_GALLERY_ADD_POST_BTN)
-    #         for element in HomeLocator.TRAVEL_GALLERY_ADD_POST_UI_ELEMENTS:
-    #             assert home.find_element(element).is_displayed()
-
-    #         home.logger.info(f"[새 게시물 추가] 버튼 클릭 시, 새 게시물 페이지 정상 진입 확인 및 주요 UI 노출 확인")
-    #     except Exception as e:
-    #         home.logger.error(f"테스트 실패: {e}")
-    #         home.save_screenshot(request.node.name)
-    #         raise
-
-    # def test_hp_18_02(self, login_driver: WebDriver, request): # 아무 입력 없이 [공유] 버튼 클릭 시, 위치 및 설명 경고 텍스트 UI 노출 확인
-    #     try:
-    #         home = Home(login_driver)
-
-    #         home.click_element(HomeLocator.TRAVEL_GALLERY_BTN)
-    #         home.click_element(HomeLocator.TRAVEL_GALLERY_ADD_POST_BTN)
-    #         home.click_element(HomeLocator.TRAVEL_GALLERY_ADD_POST_SHARE_BTN)
-
-    #         assert home.find_element(HomeLocator.TRAVEL_GALLERY_ADD_POST_LOCATION_WARNING).is_displayed()
-    #         assert home.find_element(HomeLocator.TRAVEL_GALLERY_ADD_POST_DESCRIPTION_WARNING).is_displayed()
-
-    #         home.logger.info(f"아무 입력 없이 [공유] 버튼 클릭 시, 위치 및 설명 경고 텍스트 UI 노출 확인")
-    #     except Exception as e:
-    #         home.logger.error(f"테스트 실패: {e}")
-    #         home.save_screenshot(request.node.name)
-    #         raise
-
-    def test_hp_18_03(self, login_driver: WebDriver, request): # 
+    def test_hp_18_01(self, login_driver: WebDriver, request): # [새 게시물 추가] 버튼 클릭 시, 새 게시물 페이지 정상 진입 확인 및 주요 UI 노출 확인
         try:
             home = Home(login_driver)
 
-            home.logger.info(f"")
+            home.click_element(HomeLocator.TRAVEL_GALLERY_BTN)
+            home.click_element(HomeLocator.TRAVEL_GALLERY_ADD_POST_BTN)
+            for element in HomeLocator.TRAVEL_GALLERY_ADD_POST_UI_ELEMENTS:
+                assert home.find_element(element).is_displayed()
+
+            home.logger.info(f"[새 게시물 추가] 버튼 클릭 시, 새 게시물 페이지 정상 진입 확인 및 주요 UI 노출 확인")
+        except Exception as e:
+            home.logger.error(f"테스트 실패: {e}")
+            home.save_screenshot(request.node.name)
+            raise
+
+    def test_hp_18_02(self, login_driver: WebDriver, request): # 아무 입력 없이 [공유] 버튼 클릭 시, 위치 및 설명 경고 텍스트 UI 노출 확인
+        try:
+            home = Home(login_driver)
+
+            home.click_element(HomeLocator.TRAVEL_GALLERY_BTN)
+            home.click_element(HomeLocator.TRAVEL_GALLERY_ADD_POST_BTN)
+            home.click_element(HomeLocator.TRAVEL_GALLERY_ADD_POST_SHARE_BTN)
+
+            assert home.find_element(HomeLocator.TRAVEL_GALLERY_ADD_POST_LOCATION_WARNING).is_displayed()
+            assert home.find_element(HomeLocator.TRAVEL_GALLERY_ADD_POST_DESCRIPTION_WARNING).is_displayed()
+
+            home.logger.info(f"아무 입력 없이 [공유] 버튼 클릭 시, 위치 및 설명 경고 텍스트 UI 노출 확인")
+        except Exception as e:
+            home.logger.error(f"테스트 실패: {e}")
+            home.save_screenshot(request.node.name)
+            raise
+
+    @pytest.mark.parametrize("location, description", [
+        ("대구 찜갈비", "찜갈비 존맛탱") 
+    ])
+    def test_hp_18_03(self, login_driver: WebDriver, location, description, request): # 이미지도 필수 항목이므로, [공유] 버튼이 정상 동작하지 않음
+        try:
+            home = Home(login_driver)
+
+            home.click_element(HomeLocator.TRAVEL_GALLERY_BTN)
+            home.click_element(HomeLocator.TRAVEL_GALLERY_ADD_POST_BTN)
+            home.send_keys(HomeLocator.TRAVEL_GALLERY_ADD_POST_LOCATION_INPUT, location)
+            home.send_keys(HomeLocator.TRAVEL_GALLERY_ADD_POST_DESCRIPTION_INPUT, description)
+            home.click_element(HomeLocator.TRAVEL_GALLERY_ADD_POST_SHARE_BTN)
+            home.click_element(HomeLocator.TRAVEL_GALLERY_ADD_POST_BACK_BTN)
+
+            author, region, content = home.get_post_info(HomeLocator.TRAVEL_GALLERY_FIRST_RESULT)
+            assert region != location and content != description
+
+            home.logger.info(f"이미지도 필수 항목이므로, [공유] 버튼이 정상 동작하지 않음")
+        except Exception as e:
+            home.logger.error(f"테스트 실패: {e}")
+            home.save_screenshot(request.node.name)
+            raise
+
+    @pytest.mark.parametrize("location, description", [
+        ("대구 루시드 카페", "푸딩 빙수 존맛탱")
+    ])
+    def test_hp_18_04(self, login_driver: WebDriver, location, description, request): # 작성한 게시글이 피드 글 리스트에 정상적으로 추가됨
+        try:
+            home = Home(login_driver)
+
+            home.click_element(HomeLocator.TRAVEL_GALLERY_BTN)
+            home.click_element(HomeLocator.TRAVEL_GALLERY_ADD_POST_BTN)
+            home.send_keys(HomeLocator.TRAVEL_GALLERY_ADD_POST_LOCATION_INPUT, location)
+            home.send_keys(HomeLocator.TRAVEL_GALLERY_ADD_POST_DESCRIPTION_INPUT, description)
+            home.click_element(HomeLocator.TRAVEL_GALLERY_ADD_POST_IMG_BTN)
+            home.click_element(HomeLocator.TRAVEL_GALLERY_ADD_POST_GALLERY_IMG)
+            home.click_element(HomeLocator.TRAVEL_GALLERY_ADD_POST_SHARE_BTN)
+
+            author, region, content = home.get_post_info(HomeLocator.TRAVEL_GALLERY_FIRST_RESULT, True)
+            assert region == location and content == description
+
+            home.logger.info(f"작성한 게시글이 피드 글 리스트에 정상적으로 추가됨")
+        except Exception as e:
+            home.logger.error(f"테스트 실패: {e}")
+            home.save_screenshot(request.node.name)
+            raise
+
+@pytest.mark.done
+@pytest.mark.usefixtures("login_driver")
+class TestHP19:
+    def test_hp_19_01(self, login_driver: WebDriver, request): # [게시물 검색 버튼] 클릭 시, 피드 글 검색 페이지 정상 진입 및 주요 UI 노출 확인
+        try:
+            home = Home(login_driver)
+
+            home.click_element(HomeLocator.TRAVEL_GALLERY_BTN)
+            home.click_element(HomeLocator.TRAVEL_GALLERY_SEARCH_BTN)
+            
+            assert home.find_element(HomeLocator.TRAVEL_GALLERY_SEARCH_INPUT).is_displayed()
+            assert home.find_element(HomeLocator.TRAVEL_GALLERY_SEARCH_INPUT_DELETE_BTN).is_displayed()
+
+            home.logger.info(f"[게시물 검색 버튼] 클릭 시, 피드 글 검색 페이지 정상 진입 및 주요 UI 노출 확인")
+        except Exception as e:
+            home.logger.error(f"테스트 실패: {e}")
+            home.save_screenshot(request.node.name)
+            raise
+
+    @pytest.mark.parametrize("keyword, content", [
+        ("위치", "대구 루시드 카페"), # test_hp_19_02
+        ("내용", "푸딩 빙수 존맛탱"), # test_hp_19_03
+        ("패키지", "알찬") # test_hp_19_04
+    ])
+    def test_hp_19_02(self, login_driver: WebDriver, keyword, content, request): # 입력한 키워드와 관련된 글이 검색 영역에 정상적으로 노출
+        try:
+            home = Home(login_driver)
+
+            home.click_element(HomeLocator.TRAVEL_GALLERY_BTN)
+            home.click_element(HomeLocator.TRAVEL_GALLERY_SEARCH_BTN)
+            home.send_keys(HomeLocator.TRAVEL_GALLERY_SEARCH_INPUT, content)
+
+            assert content in home.get_attribute(HomeLocator.TRAVEL_GALLERY_FIRST_RESULT, "content-desc")
+
+            home.logger.info(f"{keyword}와 관련된 키워드 {content} 입력 시, 관련된 글이 검색 영역에 정상적으로 노출")
         except Exception as e:
             home.logger.error(f"테스트 실패: {e}")
             home.save_screenshot(request.node.name)
