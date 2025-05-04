@@ -77,7 +77,10 @@ class BottomSheetLocators: # 바텀시트 관련 로케이터
 
   @staticmethod
   def search_user_profile_share_btn(user_name: str, email: str):
-    return (AppiumBy.XPATH, f'"//android.view.View[@content-desc="{user_name} {email}"]/android.widget.Button")]')
+    escaped_user_name = user_name.replace("'", "\\'").replace('"', '\\"')
+    escaped_email = email.replace("'", "\\'").replace('"', '\\"')
+    xpath = f'//android.view.View[@content-desc="{escaped_user_name}\n{escaped_email}"]/android.widget.Button'
+    return (AppiumBy.XPATH, xpath)
   
   PROFILE_SHARE_ALERT = (AppiumBy.XPATH, '//android.view.View[@content-desc="닫기"]/android.view.View/android.view.View') # 공유하기 모달창
   SHARE_ALERT_TITLE = (AppiumBy.ACCESSIBILITY_ID, '공유하기') # 공유하기 모달창 타이틀
@@ -95,10 +98,17 @@ class BottomSheetLocators: # 바텀시트 관련 로케이터
   FROFILE_SHARE_ALERT_SEND_BTN = (AppiumBy.ACCESSIBILITY_ID, '보내기') # 보내기 버튼
 
   #사용자 공유-채팅방
+  @staticmethod
+  def share_user_message_check(user_name: str, email: str): # 공유한 사용자 프로필 메시지 확인
+    escaped_user_name = user_name.replace("'", "\\'").replace('"', '\\"')
+    escaped_email = email.replace("'", "\\'").replace('"', '\\"')
+    xpath = f'//android.view.View[@content-desc="{escaped_user_name}\n{escaped_email}"]'
+    return (AppiumBy.XPATH, xpath)
+
   PROFILE_DM_BTN = (AppiumBy.ACCESSIBILITY_ID, '1:1 채팅') # 1:1 채팅 버튼
   VIEW_PROFILE_BTN = (AppiumBy.ACCESSIBILITY_ID, '프로필 보기') # 프로필 보기 버튼
 
-  USER_SHARE_ALERT_UI_LOCS = [SHARE_ALERT_TITLE, SHARE_ALERT_TITLE, PROFILE_DM_BTN, VIEW_PROFILE_BTN, FROFILE_SHARE_ALERT_CANCEL_BTN, FROFILE_SHARE_ALERT_SEND_BTN]
+  USER_SHARE_ALERT_UI_LOCS = [SHARE_ALERT_TITLE, FROFILE_SHARE_ALERT_CANCEL_BTN, FROFILE_SHARE_ALERT_SEND_BTN]
 
 
   @staticmethod
@@ -117,7 +127,6 @@ class BottomSheetLocators: # 바텀시트 관련 로케이터
 
   PACKAGE_LIST = (AppiumBy.XPATH, '//android.widget.FrameLayout[@resource-id="android:id/content"]/android.widget.FrameLayout/android.view.View/android.view.View/android.view.View/android.view.View[2]/android.view.View') #패키지 리스트
 
-  PACKAGE_EMPTY_LIST = (AppiumBy.XPATH, '//android.widget.FrameLayout[@resource-id="android:id/content"]/android.widget.FrameLayout/android.view.View/android.view.View/android.view.View/android.view.View[1]') #패키지 빈 리스트 체크 필요
 
   @staticmethod
   def package_share_btn(package_name: str = None, price: str = None, guide_name: str = None):
@@ -142,7 +151,7 @@ class BottomSheetLocators: # 바텀시트 관련 로케이터
     if not conditions:
         raise ValueError("XPath를 생성하려면 최소한 하나 이상의 인자를 입력해야 합니다.")
 
-    xpath = f'//android.widget.ImageView[{" and ".join(conditions)}]'
+    xpath = f'//android.widget.ImageView[{" and ".join(conditions)}]/android.widget.Button'
     return (AppiumBy.XPATH, xpath)
 
   PACKAGE_SHARE_ALERT = (AppiumBy.XPATH, '//android.view.View[@content-desc="닫기"]/android.view.View/android.view.View') # 공유하기 모달창
