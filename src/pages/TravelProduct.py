@@ -1,17 +1,20 @@
 import re
 import time
 import pytz
+import os
 from datetime import datetime
 from src.pages.BasePage import BasePage
 from src.utils.locators.TravelProductLocator import (
     TravelProductUtilLocator, 
     TravelProductListLocator, 
     TravelProductDetailLocator, 
+    TravelProductReviewLocator,
     GuideProfileLocator, 
     ReservationLocator
 )
 from src.utils.locators.ChattingLocator import ChatRoomLocator
 from src.utils.locators.MyPageLocator import MypageProfile
+from src.resources.testdata.TravelProduct.TravelProdouctTestdata import TestItem
 
 class TravelProduct(BasePage):
     def __init__(self, driver, page_name = "TravelProduct"):
@@ -19,6 +22,7 @@ class TravelProduct(BasePage):
         self.util_locator = TravelProductUtilLocator
         self.page_locator = TravelProductListLocator
         self.detail_locator = TravelProductDetailLocator
+        self.review_locator = TravelProductReviewLocator
         self.guide_profile_locator = GuideProfileLocator
         self.reservation_locator = ReservationLocator
         self.chat_locator = ChatRoomLocator
@@ -166,7 +170,7 @@ class TravelProduct(BasePage):
     ''' 여행 패키지 상세 화면 '''
     # 여행 패키지 터치 및 패키지 정보 저장
     def touch_package_save_info(self, region):
-        for _ in range(1, 50):
+        for _ in range(1, 100):
             elements = self.driver.find_elements(*self.util_locator.get_image(region))
             if elements:
                 item = self.get_attribute(self.util_locator.get_image(region), "content-desc")
@@ -239,7 +243,119 @@ class TravelProduct(BasePage):
     
 
     ''' 리뷰작성 화면 '''
-    # 추후 작성 예정
+    # 여행 패키지의 상세 화면 리뷰/별점 터치
+    def touch_review(self):
+        lines = self.get_attribute(self.review_locator.REVIEW, "content-desc").strip().split("\n")
+        review_count = int(''.join(filter(str.isdigit, lines[0])))
+        review_rating = lines[1]
+        self.click_element(self.detail_locator.REVIEW)
+        return review_count, review_rating
+
+    # 리뷰 화면으로 진입 확인
+    def check_review_enter(self, name):
+        return self.find_element(self.util_locator.get_text(name)).is_displayed()
+    
+    # 리뷰 화면 UI 요소
+    def check_review_ui_elements(self, review_count, review_rating):
+        REVIEW_UI_ELEMENTS = [
+            self.util_locator.get_text(review_rating),
+            self.review_locator.get_review_count(review_count)
+        ]
+        return REVIEW_UI_ELEMENTS
+    
+    # 리뷰 존재하는 경우 화면 UI 요소 확인 (예약 승인된 회원)
+    def check_is_verified_review_visible_ui_elements(self, review_count, review_rating):
+        REVIEW_UI_ELEMENTS = self.check_review_ui_elements(review_count, review_rating)
+        REVIEW_UI_ELEMENTS.append(self.review_locator.VERIFIED_REVIEW_SECTION_VISIBLE)
+        return all(
+            self.find_element(ui_element).is_displayed()
+            for ui_element in REVIEW_UI_ELEMENTS
+        )
+    
+    # 리뷰 존재하는 경우 화면 UI 요소 확인 (예약 승인되지 않은 회원)
+    def check_is_unverified_review_visible_ui_elements(self, review_count, review_rating):
+        REVIEW_UI_ELEMENTS = self.check_review_ui_elements(review_count, review_rating)
+        REVIEW_UI_ELEMENTS.append(self.review_locator.UNVERIFIED_REVIEW_SECTION_VISIBLE)
+        REVIEW_UI_ELEMENTS.append(self.review_locator.UNVERIFIED_REVIEW)
+        return all(
+            self.find_element(ui_element).is_displayed()
+            for ui_element in REVIEW_UI_ELEMENTS
+        )
+    
+    # 리뷰 존재하지 않는 경우 화면 UI 요소 확인 (예약 승인된 회원)
+    def check_is_verified_no_review_visible_ui_elements(self, review_count, review_rating):
+        REVIEW_UI_ELEMENTS = self.check_review_ui_elements(review_count, review_rating)
+        REVIEW_UI_ELEMENTS.append(self.review_locator.INVISIBLE_REVIEW)
+        return all(
+            self.find_element(ui_element).is_displayed()
+            for ui_element in REVIEW_UI_ELEMENTS
+        )
+    
+    # 리뷰 존재하지 않는 경우 화면 UI 요소 확인 (예약 승인되지 않은 회원)
+    def check_is_unverified_no_review_visible_ui_elements(self, review_count, review_rating):
+        REVIEW_UI_ELEMENTS = self.check_review_ui_elements(review_count, review_rating)
+        REVIEW_UI_ELEMENTS.append(self.review_locator.INVISIBLE_REVIEW)
+        REVIEW_UI_ELEMENTS.append(self.review_locator.UNVERIFIED_REVIEW)
+        return all(
+            self.find_element(ui_element).is_displayed()
+            for ui_element in REVIEW_UI_ELEMENTS
+        ) 
+    
+    # 리뷰 작성하기 터치
+    def touch_review_write(self):
+        self.click_element(self.review_locator.TO_WRITE_REVIEW)
+
+    # 리뷰 작성 화면으로 진입 확인
+    def check_review_write_enter(self):
+        return self.find_element(self.review_locator.REVIEW_WRITE)
+    
+    # 리뷰 작성 화면 UI 요소 확인
+    def check_review_write_ui_elements(self, name):
+        REVIEW_WRITE_UI_ELEMENTS = [
+            self.util_locator.get_text(name),
+            self.util_locator.INPUT,
+            self.review_locator.SEND_REVIEW
+        ]
+        for i in range(1, 6):
+            REVIEW_WRITE_UI_ELEMENTS.append(self.review_locator.select_review_star(i))
+        return all(
+            self.find_element(ui_element).is_displayed()
+            for ui_element in REVIEW_WRITE_UI_ELEMENTS
+        )
+    
+    # 별점 선택
+    def touch_review_star(self, count):
+        for i in range(1, count + 1):
+            self.click_element(self.review_locator.select_review_star(i))
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        save_path = os.path.join(base_dir, "../resources/testdata/TravelProduct", "selected_review_star.png")
+        os.makedirs(os.path.dirname(save_path), exist_ok=True)
+        self.driver.save_screenshot(save_path)
+        return save_path
+
+    # 별점 노출 확인
+    def check_review_star(self, save_path):
+        ai_result = TestItem.get_star_count_from_api(save_path) # google Ai 사용
+        return ai_result
+        
+    # 리뷰 작성 화면 리뷰 내용 입력
+    def input_review(self):
+        text = "리뷰 작성 테스트 중입니다"
+        review = self.click_element(self.util_locator.INPUT)
+        review.send_keys(text) 
+        return text
+    
+    # 리뷰 작성 화면 리뷰 내용 입력 확인
+    def check_input_review(self, text):
+        return self.find_element(self.util_locator.INPUT).text == text
+    
+    # 리뷰 등록 터치
+    def touch_send_review(self):
+        self.click_element(self.review_locator.SEND_REVIEW)
+    
+    # 리뷰 미작성 시, 토스트 메시지 노출 확인
+    def check_no_input_review(self):
+        return self.find_element(self.review_locator.NO_INPUT_REVIEW)
 
 
     ''' 가이드 프로필 화면 '''
@@ -321,7 +437,6 @@ class TravelProduct(BasePage):
         else:
             year_month = f"{now_kst.year}년 {now_kst.month}월"
             return year_month
-
 
     # 예약하기 화면 화면 UI 요소 확인
     def check_reservation_ui_elements(self):

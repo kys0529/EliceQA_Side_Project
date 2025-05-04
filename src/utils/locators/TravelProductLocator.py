@@ -62,8 +62,24 @@ class TravelProductDetailLocator:
 
 
 ''' 리뷰작성 화면 '''
-class TravelProductReviewLocator:   
-    pass
+class TravelProductReviewLocator:
+    REVIEW = (AppiumBy.XPATH, "//android.widget.Button[contains(@content-desc, '리뷰') and contains(@content-desc, '개')]")
+    TO_WRITE_REVIEW = (AppiumBy.ACCESSIBILITY_ID, "리뷰 작성하기")
+    REVIEW_WRITE = (AppiumBy.ACCESSIBILITY_ID, "리뷰 작성")
+    SEND_REVIEW = (AppiumBy.ACCESSIBILITY_ID, "리뷰 등록")
+    NO_INPUT_REVIEW = (AppiumBy.ACCESSIBILITY_ID, "리뷰 내용을 입력해주세요")
+    VERIFIED_REVIEW_SECTION_VISIBLE = (AppiumBy.XPATH, "//android.view.View[4]/android.view.View/android.view.View")
+    UNVERIFIED_REVIEW_SECTION_VISIBLE = (AppiumBy.XPATH, "//android.view.View[5]/android.view.View/android.view.View")
+    INVISIBLE_REVIEW = (AppiumBy.ACCESSIBILITY_ID, "아직 작성된 리뷰가 없습니다")
+    UNVERIFIED_REVIEW = (AppiumBy.ACCESSIBILITY_ID, "예약 승인된 사용자만 리뷰를 작성할 수 있습니다")
+
+    @staticmethod
+    def select_review_star(text):
+        return (AppiumBy.XPATH, f"//android.view.View[2]//android.widget.Button[{text}]")
+
+    @staticmethod
+    def get_review_count(text): # 리뷰 개수
+        return (AppiumBy.XPATH, f"//android.view.View[@content-desc='리뷰 {text}개']")
 
 
 ''' 가이드 프로필 화면 '''

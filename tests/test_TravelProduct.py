@@ -83,7 +83,7 @@ class TestTP02:
             travel_product.logger.info("여행 패키지 화면 진입 확인")
         
             travel_product.search_packages(search_text)
-            travel_product.logger.info(f"제목 또는 설명에 {search_text} 검색어가 포함된 여행 패키지 노출 확인")
+            travel_product.logger.info(f"상단 돋보기 아이콘 터치 및 검색어 {search_text} 입력")
 
             assert travel_product.check_no_search_packages()
             travel_product.logger.info(f"{search_text} 검색 결과 없는 경우 안내 문구 노출 확인")
@@ -423,7 +423,368 @@ class TestTP09:
 
 
 ''' 리뷰작성 화면 '''
-# 추후 작성 예정
+@pytest.mark.done
+@pytest.mark.usefixtures("login_driver")
+class TestTP10:
+    # [TP_10_01] 예약 승인된 회원 - 선택한 여행 패키지의 리뷰 화면으로 진입 확인(리뷰 존재하는 케이스)
+    def test_TP_10_01(self, login_driver: WebDriver, request):
+        travel_product = TravelProduct(login_driver)
+
+        region = "예약 승인 리뷰 존재 테스트용"
+
+        try:
+            travel_product.touch_travel_product_navigation()
+            travel_product.search_packages(region)
+            name, _ = travel_product.touch_package_save_info(region)
+            travel_product.logger.info("여행 패키지의 상세 화면으로 진입 확인")
+
+            travel_product.touch_review()
+            travel_product.logger.info("여행 패키지의 상세 화면 리뷰/별점 터치")
+
+            assert travel_product.check_review_enter(name)
+            travel_product.logger.info("리뷰 화면으로 진입 확인")
+
+        except Exception as e:
+            travel_product.logger.error(f"✖ 테스트 중 문제 발생: {e}")
+            travel_product.save_screenshot(request.node.name)
+            raise
+
+        finally:
+            travel_product.logger.info("[TP_10_01] 예약 승인된 회원 - 선택한 여행 패키지의 리뷰 화면으로 진입 확인(리뷰 존재하는 케이스) 테스트 완료")
+            
+    # [TP_10_02] 예약 승인된 회원 - 선택한 여행 패키지의 리뷰 화면 UI 요소 확인(리뷰 존재하는 케이스)
+    def test_TP_10_02(self, login_driver: WebDriver, request):
+        travel_product = TravelProduct(login_driver)
+
+        region = "예약 승인 리뷰 존재 테스트용"
+
+        try:
+            travel_product.touch_travel_product_navigation()
+            travel_product.search_packages(region)
+            travel_product.touch_package_save_info(region)
+            travel_product.logger.info("여행 패키지의 상세 화면으로 진입 확인")
+
+            review_count, review_rating = travel_product.touch_review()
+            travel_product.logger.info("여행 패키지의 상세 화면 리뷰/별점 터치")
+
+            assert travel_product.check_is_verified_review_visible_ui_elements(review_count, review_rating)
+            travel_product.logger.info("리뷰 존재하는 경우 화면 UI 요소 확인")
+
+        except Exception as e:
+            travel_product.logger.error(f"✖ 테스트 중 문제 발생: {e}")
+            travel_product.save_screenshot(request.node.name)
+            raise
+
+        finally:
+            travel_product.logger.info("[TP_10_02] 예약 승인된 회원 - 선택한 여행 패키지의 리뷰 화면 UI 요소 확인(리뷰 존재하는 케이스) 테스트 완료")
+
+    # [TP_10_03] 예약 승인된 회원 - 선택한 여행 패키지의 리뷰 화면으로 진입 확인(리뷰 존재하지 않는 케이스)
+    def test_TP_10_03(self, login_driver: WebDriver, request):
+        travel_product = TravelProduct(login_driver)
+
+        region = "예약 승인 리뷰 미존재 테스트용"
+
+        try:
+            travel_product.touch_travel_product_navigation()
+            travel_product.search_packages(region)
+            name, _ = travel_product.touch_package_save_info(region)
+            travel_product.logger.info("여행 패키지의 상세 화면으로 진입 확인")
+
+            travel_product.touch_review()
+            travel_product.logger.info("여행 패키지의 상세 화면 리뷰/별점 터치")
+
+            assert travel_product.check_review_enter(name)
+            travel_product.logger.info("리뷰 화면으로 진입 확인")
+
+        except Exception as e:
+            travel_product.logger.error(f"✖ 테스트 중 문제 발생: {e}")
+            travel_product.save_screenshot(request.node.name)
+            raise
+
+        finally:
+            travel_product.logger.info("[TP_10_03] 예약 승인된 회원 - 선택한 여행 패키지의 리뷰 화면으로 진입 확인(리뷰 존재하지 않는 케이스) 테스트 완료")
+
+    # [TP_10_04] 예약 승인된 회원 - 선택한 여행 패키지의 리뷰 화면 UI 요소 확인(리뷰 존재하지 않는 케이스)
+    def test_TP_10_04(self, login_driver: WebDriver, request):
+        travel_product = TravelProduct(login_driver)
+
+        region = "예약 승인 리뷰 미존재 테스트용"
+
+        try:
+            travel_product.touch_travel_product_navigation()
+            travel_product.search_packages(region)
+            travel_product.touch_package_save_info(region)
+            travel_product.logger.info("여행 패키지의 상세 화면으로 진입 확인")
+
+            review_count, review_rating = travel_product.touch_review()
+            travel_product.logger.info("여행 패키지의 상세 화면 리뷰/별점 터치")
+
+            assert travel_product.check_is_verified_no_review_visible_ui_elements(review_count, review_rating)
+            travel_product.logger.info("리뷰 존재하지 않는 경우 화면 UI 요소 확인")
+
+        except Exception as e:
+            travel_product.logger.error(f"✖ 테스트 중 문제 발생: {e}")
+            travel_product.save_screenshot(request.node.name)
+            raise
+
+        finally:
+            travel_product.logger.info("[TP_10_04] 예약 승인된 회원 - 선택한 여행 패키지의 리뷰 화면 UI 요소 확인(리뷰 존재하지 않는 케이스) 테스트 완료")
+
+
+@pytest.mark.done
+@pytest.mark.usefixtures("login_driver")
+class TestTP11:
+    # [TP_11_01] 예약 승인된 회원 - 리뷰 작성하기 화면으로 진입 확인
+    def test_TP_11_01(self, login_driver: WebDriver, request):
+        travel_product = TravelProduct(login_driver)
+
+        region = "예약 승인 리뷰 존재 테스트용"
+
+        try:
+            travel_product.touch_travel_product_navigation()
+            travel_product.search_packages(region)
+            travel_product.touch_package_save_info(region)
+            travel_product.touch_review()
+            travel_product.logger.info("리뷰 화면으로 진입 확인")
+
+            travel_product.touch_review_write()
+            travel_product.logger.info("리뷰 작성하기 터치")
+
+            assert travel_product.check_review_write_enter()
+            travel_product.logger.info("리뷰 작성 화면으로 진입 확인")
+
+        except Exception as e:
+            travel_product.logger.error(f"✖ 테스트 중 문제 발생: {e}")
+            travel_product.save_screenshot(request.node.name)
+            raise
+
+        finally:
+            travel_product.logger.info("[TP_11_01] 예약 승인된 회원 - 리뷰 작성하기 화면으로 진입 확인 테스트 완료")
+
+    # [TP_11_02] 예약 승인된 회원 - 리뷰 작성하기 화면 UI 요소 확인
+    def test_TP_11_02(self, login_driver: WebDriver, request):
+        travel_product = TravelProduct(login_driver)
+
+        region = "예약 승인 리뷰 존재 테스트용"
+
+        try:
+            travel_product.touch_travel_product_navigation()
+            travel_product.search_packages(region)
+            name, _ = travel_product.touch_package_save_info(region)
+            travel_product.touch_review()
+            travel_product.logger.info("리뷰 화면으로 진입 확인")
+
+            travel_product.touch_review_write()
+            travel_product.logger.info("리뷰 작성하기 터치")
+
+            assert travel_product.check_review_write_ui_elements(name)
+            travel_product.logger.info("리뷰 작성 화면 UI 요소 확인")
+
+        except Exception as e:
+            travel_product.logger.error(f"✖ 테스트 중 문제 발생: {e}")
+            travel_product.save_screenshot(request.node.name)
+            raise
+
+        finally:
+            travel_product.logger.info("[TP_11_02] 예약 승인된 회원 - 리뷰 작성하기 화면 UI 요소 확인 테스트 완료")
+
+
+@pytest.mark.done
+@pytest.mark.usefixtures("login_driver")
+class TestTP12:
+    # [TP_12_01] 예약 승인된 회원 - 리뷰 별점 선택 시, 선택한 별만큼 별이 채워져 노출 확인
+    def test_TP_12_01(self, login_driver: WebDriver, request):
+        travel_product = TravelProduct(login_driver)
+
+        region = "예약 승인 리뷰 존재 테스트용"
+        count = 4
+
+        try:
+            travel_product.touch_travel_product_navigation()
+            travel_product.search_packages(region)
+            travel_product.touch_package_save_info(region)
+            travel_product.touch_review()
+            travel_product.touch_review_write()
+            travel_product.logger.info("리뷰 작성 화면으로 진입 확인")
+
+            save_path = travel_product.touch_review_star(count)
+            travel_product.logger.info("별점 선택")
+
+            ai_result = travel_product.check_review_star(save_path)
+            assert ai_result == count
+            travel_product.logger.info(f"별점 노출 확인 (선택: {count})")
+
+        except Exception as e:
+            travel_product.logger.error(f"✖ 테스트 중 문제 발생: {e}")
+            travel_product.save_screenshot(request.node.name)
+            raise
+
+        finally:
+            travel_product.logger.info("[TP_12_01] 예약 승인된 회원 - 리뷰 별점 선택 시, 선택한 별만큼 별이 채워져 노출 확인 테스트 완료")
+
+    # [TP_12_02] 예약 승인된 회원 - 정상적으로 리뷰 내용 입력 확인
+    def test_TP_12_02(self, login_driver: WebDriver, request):
+        travel_product = TravelProduct(login_driver)
+
+        region = "예약 승인 리뷰 존재 테스트용"
+
+        try:
+            travel_product.touch_travel_product_navigation()
+            travel_product.search_packages(region)
+            travel_product.touch_package_save_info(region)
+            travel_product.touch_review()
+            travel_product.touch_review_write()
+            travel_product.logger.info("리뷰 작성 화면으로 진입 확인")
+
+            text = travel_product.input_review()
+            travel_product.logger.info("리뷰 작성 화면 리뷰 내용 입력")
+
+            assert travel_product.check_input_review(text)
+            travel_product.logger.info("리뷰 작성 화면 리뷰 내용 입력 확인")
+
+        except Exception as e:
+            travel_product.logger.error(f"✖ 테스트 중 문제 발생: {e}")
+            travel_product.save_screenshot(request.node.name)
+            raise
+
+        finally:
+            travel_product.logger.info("[TP_12_02] 예약 승인된 회원 - 정상적으로 리뷰 내용 입력 확인 테스트 완료")
+
+    # [TP_12_04] 예약 승인된 회원 - 리뷰 내용 미입력 시, 토스트 메시지 확인
+    def test_TP_12_04(self, login_driver: WebDriver, request):
+        travel_product = TravelProduct(login_driver)
+
+        region = "예약 승인 리뷰 존재 테스트용"
+
+        try:
+            travel_product.touch_travel_product_navigation()
+            travel_product.search_packages(region)
+            travel_product.touch_package_save_info(region)
+            travel_product.touch_review()
+            travel_product.touch_review_write()
+            travel_product.logger.info("리뷰 작성 화면으로 진입 확인")
+
+            travel_product.touch_send_review()
+            travel_product.logger.info("리뷰 등록 터치")
+
+            assert travel_product.check_no_input_review()
+            travel_product.logger.info("리뷰 미작성 시, 토스트 메시지 노출 확인")
+
+        except Exception as e:
+            travel_product.logger.error(f"✖ 테스트 중 문제 발생: {e}")
+            travel_product.save_screenshot(request.node.name)
+            raise
+
+        finally:
+            travel_product.logger.info("[TP_12_04] 예약 승인된 회원 - 리뷰 내용 미입력 시, 토스트 메시지 확인 테스트 완료")
+
+
+@pytest.mark.done
+@pytest.mark.usefixtures("login_driver")
+class TestTP13:
+    # [TP_13_01] 예약 승인되지 않은 회원 - 선택한 여행 패키지의 리뷰 화면으로 진입 확인(리뷰 존재하는 케이스)
+    def test_TP_13_01(self, login_driver: WebDriver, request):
+        travel_product = TravelProduct(login_driver)
+
+        region = "예약 미승인 리뷰 존재 테스트용"
+
+        try:
+            travel_product.touch_travel_product_navigation()
+            travel_product.search_packages(region)
+            name, _ = travel_product.touch_package_save_info(region)
+            travel_product.logger.info("여행 패키지의 상세 화면으로 진입 확인")
+
+            travel_product.touch_review()
+            travel_product.logger.info("여행 패키지의 상세 화면 리뷰/별점 터치")
+
+            assert travel_product.check_review_enter(name)
+            travel_product.logger.info("리뷰 화면으로 진입 확인")
+
+        except Exception as e:
+            travel_product.logger.error(f"✖ 테스트 중 문제 발생: {e}")
+            travel_product.save_screenshot(request.node.name)
+            raise
+
+        finally:
+            travel_product.logger.info("[TP_13_01] 예약 승인되지 않은 회원 - 선택한 여행 패키지의 리뷰 화면으로 진입 확인(리뷰 존재하는 케이스) 테스트 완료")
+
+    # [TP_13_02] 예약 승인되지 않은 회원 - 선택한 여행 패키지의 리뷰 화면 UI 요소 확인(리뷰 존재하는 케이스)
+    def test_TP_13_02(self, login_driver: WebDriver, request):
+        travel_product = TravelProduct(login_driver)
+
+        region = "예약 미승인 리뷰 존재 테스트용"
+
+        try:
+            travel_product.touch_travel_product_navigation()
+            travel_product.search_packages(region)
+            travel_product.touch_package_save_info(region)
+            travel_product.logger.info("여행 패키지의 상세 화면으로 진입 확인")
+
+            review_count, review_rating = travel_product.touch_review()
+            travel_product.logger.info("여행 패키지의 상세 화면 리뷰/별점 터치")
+
+            assert travel_product.check_is_unverified_review_visible_ui_elements(review_count, review_rating)
+            travel_product.logger.info("리뷰 존재하는 경우 화면 UI 요소 확인")
+
+        except Exception as e:
+            travel_product.logger.error(f"✖ 테스트 중 문제 발생: {e}")
+            travel_product.save_screenshot(request.node.name)
+            raise
+
+        finally:
+            travel_product.logger.info("[TP_13_02] 예약 승인되지 않은 회원 - 선택한 여행 패키지의 리뷰 화면 UI 요소 확인(리뷰 존재하는 케이스) 테스트 완료")
+
+    # [TP_13_03] 예약 승인되지 않은 회원 - 선택한 여행 패키지의 리뷰 화면으로 진입 확인(리뷰 존재하지 않는 케이스)
+    def test_TP_13_03(self, login_driver: WebDriver, request):
+        travel_product = TravelProduct(login_driver)
+
+        region = "예약 미승인 리뷰 미존재 테스트용"
+
+        try:
+            travel_product.touch_travel_product_navigation()
+            travel_product.search_packages(region)
+            name, _ = travel_product.touch_package_save_info(region)
+            travel_product.logger.info("여행 패키지의 상세 화면으로 진입 확인")
+
+            travel_product.touch_review()
+            travel_product.logger.info("여행 패키지의 상세 화면 리뷰/별점 터치")
+
+            assert travel_product.check_review_enter(name)
+            travel_product.logger.info("리뷰 화면으로 진입 확인")
+
+        except Exception as e:
+            travel_product.logger.error(f"✖ 테스트 중 문제 발생: {e}")
+            travel_product.save_screenshot(request.node.name)
+            raise
+
+        finally:
+            travel_product.logger.info("[TP_13_03] 예약 승인되지 않은 회원 - 선택한 여행 패키지의 리뷰 화면으로 진입 확인(리뷰 존재하지 않는 케이스) 테스트 완료")
+
+    # [TP_13_04] 예약 승인되지 않은 회원 - 선택한 여행 패키지의 리뷰 화면 UI 요소 확인(리뷰 존재하지 않는 케이스)
+    def test_TP_13_04(self, login_driver: WebDriver, request):
+        travel_product = TravelProduct(login_driver)
+
+        region = "예약 미승인 리뷰 미존재 테스트용"
+
+        try:
+            travel_product.touch_travel_product_navigation()
+            travel_product.search_packages(region)
+            travel_product.touch_package_save_info(region)
+            travel_product.logger.info("여행 패키지의 상세 화면으로 진입 확인")
+
+            review_count, review_rating = travel_product.touch_review()
+            travel_product.logger.info("여행 패키지의 상세 화면 리뷰/별점 터치")
+
+            assert travel_product.check_is_unverified_no_review_visible_ui_elements(review_count, review_rating)
+            travel_product.logger.info("리뷰 존재하지 않는 경우 화면 UI 요소 확인")
+
+        except Exception as e:
+            travel_product.logger.error(f"✖ 테스트 중 문제 발생: {e}")
+            travel_product.save_screenshot(request.node.name)
+            raise
+
+        finally:
+            travel_product.logger.info("[TP_13_04] 예약 승인되지 않은 회원 - 선택한 여행 패키지의 리뷰 화면 UI 요소 확인(리뷰 존재하지 않는 케이스)테스트 완료")
 
 
 ''' 가이드 프로필 화면 '''
