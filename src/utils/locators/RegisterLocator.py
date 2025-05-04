@@ -36,3 +36,8 @@ PASSWORD_CONFIRM_VISIBLE_BTN = (AppiumBy.ANDROID_UIAUTOMATOR,'new UiSelector().c
 
 # 📌 회원가입 탭 - 회원가입 버튼
 REGISTER_BTN = (AppiumBy.XPATH, '//android.widget.Button[@content-desc="회원가입"]')
+
+# 📌 회원가입 탭 - 이메일 인증 필요 팝업
+EMAIL_AUTH_POPUP = (AppiumBy.ACCESSIBILITY_ID, "이메일 인증 필요")
+EMAIL_AUTH_POPUP_TEXT = (AppiumBy.ACCESSIBILITY_ID, "이메일로 전송된 링크로 인증 하십시오.")
+EMAIL_AUTH_POPUP_COMPLETE_BTN = (AppiumBy.ACCESSIBILITY_ID, "인증 완료")

@@ -1,6 +1,7 @@
 from src.pages.Register import Register
 from src.utils.locators import RegisterLocator
 import time
+import src.resources.testdata.test_data
 
 class TestLR02: # 회원가입 탭 - 요소 확인
 
@@ -207,3 +208,13 @@ class TestLR03: # 회원가입 탭 - 기능 확인
         except Exception as e:
             register.handle_exception(request, e)
         assert password_confirm.text == "123456", f"비밀번호 확인 입력란에 다르게 입력됨. 현재 입력된 값 : {password_confirm.text}"
+
+    def test_lr_03_09(self, driver, request): # 회원가입 탭 - 이메일 인증 팝업 확인
+        try:
+            register = Register(driver)
+            register.navigate_to_register(driver)
+            register.input_register_data(driver,"registered_id")
+            email_auth_popup = register.find_element(RegisterLocator.EMAIL_AUTH_POPUP)
+        except Exception as e:
+            register.handle_exception(request, e)
+        assert email_auth_popup.is_displayed(), f"이메일 인증 팝업이 보이지 않는 상태."
