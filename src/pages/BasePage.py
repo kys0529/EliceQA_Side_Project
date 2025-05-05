@@ -1,6 +1,8 @@
 import os
 import time
 import logging
+import cv2  # 스크린샷 비교를 위한 OpenCV import (pip install opencv-python 로 설치하시면 됩니다!)
+import re   # 요소 좌표 계산 시 정규식 활용을 위해 import
 from appium.webdriver.webdriver import WebDriver
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
@@ -42,6 +44,7 @@ class BasePage:
         timestamp = time.strftime("%Y-%m-%d_%H-%M-%S")
         screenshot_file = os.path.join(screenshot_dir, f"{timestamp}_{func_name}.png")
         self.driver.save_screenshot(screenshot_file)
+        return screenshot_file
 
     # 요소 클릭 (클릭 가능할 때까지 대기 후 클릭)
     def click_element(self, locator):
@@ -122,3 +125,52 @@ class BasePage:
         end_y = size["height"] * 0.2
         x = size["width"] * 0.5
         self.driver.swipe(start_x=x, start_y=start_y, end_x=x, end_y=end_y, duration=800)
+
+    # 스크린샷 비교를 위한 특정 좌표 색상값 추출
+    def get_coordinate_color(self, status, bounds, x_offset, y_offset):
+        timestamp = time.strftime("%Y-%m-%d_%H-%M-%S")
+        screenshot_file = self.save_screenshot(f"ForColorCheck - {status}")
+        
+        x_y_values = re.findall(r"\d+", bounds)
+        x1, y1, x2, y2 = map(int, x_y_values)
+        
+        center_x = (x1+x2)//2
+        center_y = (y1+y2)//2
+        
+        img = cv2.imread(screenshot_file)
+
+        coordinate = (center_x + x_offset, center_y + y_offset)
+
+        h, w, _ = img.shape
+
+        circle_color = (0, 0, 255)
+        radius = 5
+        thickness = -1
+
+        confirm_coordinate_img = img.copy()
+
+        save_dir = f"reports/screenshots/{self.page_name}"
+        os.makedirs(save_dir, exist_ok=True)
+
+        if 0 <= coordinate[0] < w and 0 <= coordinate[1] < h:
+            b, g, r = img[coordinate[1], coordinate[0]]
+            pixel_rgb = tuple(map(int,(r, g, b)))
+            
+            file_name = f"{timestamp}_ColorIsChecked - {status}.png"
+            save_path = os.path.join(save_dir, file_name)
+
+
+            cv2.circle(confirm_coordinate_img,coordinate, radius, circle_color, thickness)
+            cv2.imwrite(save_path, confirm_coordinate_img)
+
+            self.logger.info("✔ 입력된 좌표값이 이미지 범위 내입니다.")
+            self.logger.info("✔ 색상 추출 영역 표시 및 추출 색상 정보가 포함된 이미지가 스크린샷 폴더에 저장되었습니다.")
+            return pixel_rgb
+
+        else:
+            file_name = f"{timestamp}_ColorNotChecked - {status}.png"
+            save_path = os.path.join(save_dir, file_name)
+            cv2.imwrite(save_path, confirm_coordinate_img)
+            self.logger.error("✖ 입력된 좌표값이 이미지 범위 밖입니다.")
+            self.logger.error("✖ 이미지에 색상 추출 영역 및 추출 색상 정보가 포함되지 않습니다.")
+            return None

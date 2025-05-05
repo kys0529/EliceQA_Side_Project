@@ -102,7 +102,7 @@ class TestMP01:
             raise
 
 
-@pytest.mark.skip("스크린샷으로 비교 필요로, 검증 과정 추후 개발 예정")
+# @pytest.mark.skip("스크린샷으로 비교 필요로, 검증 과정 추후 개발 예정")
 @pytest.mark.usefixtures("login_driver")
 class TestMP02:
     @pytest.mark.wip
@@ -113,17 +113,25 @@ class TestMP02:
             mypage.into_mypage()
 
             # Steps
+            before_bounds = mypage.get_attribute(MyPageLocator.MypageMain.THEME_TOGGLE_BTN, "bounds")
+            before_btn_color = mypage.get_coordinate_color("beforeClickThemeToggle", before_bounds, 25, 0)
+
             mypage.click_element(MyPageLocator.MypageMain.THEME_TOGGLE_BTN)
+            time.sleep(2)
+
+            after_bounds = mypage.get_attribute(MyPageLocator.MypageMain.THEME_TOGGLE_BTN, "bounds")
+            after_btn_color = mypage.get_coordinate_color("afterClickThemeToggle", after_bounds, -25, 0)
 
             # Expected Result
-            """assert 추가 필요"""
-            mypage.logger.info("✅ 앱 테마 - 다크 모드로 변경 확인")
+            assert before_btn_color != after_btn_color
+            assert after_btn_color == (43, 52, 102)
+            mypage.logger.info(f"✅ 앱 테마 - 다크 모드로 변경 확인, 변경 전 색상 - {before_btn_color} / 변경 후 색상 - {after_btn_color}")
 
         except Exception as e:
             mypage.logger.info(f"❌ 테스트 실패: {e}")
             mypage.save_screenshot(request.node.name)
             raise
-
+    @pytest.mark.skip("스크린샷으로 비교 필요로, 검증 과정 추후 개발 예정")
     @pytest.mark.wip
     def test_mp_02_02(self, login_driver: WebDriver, request):  # 앱 테마 변경 - 라이트 모드
         try:

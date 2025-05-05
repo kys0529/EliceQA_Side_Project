@@ -1,0 +1,7 @@
+pytest
+Appium-Python-Client
+python-dotenv
+selenium
+pytz
+requests
+opencv-python

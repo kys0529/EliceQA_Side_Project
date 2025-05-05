@@ -1,6 +1,8 @@
 from src.pages.Register import Register
 from src.utils.locators import RegisterLocator
 import time
+from appium.webdriver.webdriver import WebDriver as AppiumWebDriver
+from src.resources.testdata.test_data import not_registered_id, registered_id
 
 class TestLR02: # 회원가입 탭 - 요소 확인
 
@@ -207,3 +209,39 @@ class TestLR03: # 회원가입 탭 - 기능 확인
         except Exception as e:
             register.handle_exception(request, e)
         assert password_confirm.text == "123456", f"비밀번호 확인 입력란에 다르게 입력됨. 현재 입력된 값 : {password_confirm.text}"
+
+    
+    def test_lr_03_09(self, driver: AppiumWebDriver, request): #회원가입 탭 - 이메일 인증
+        try:            
+            register = Register(driver)
+            register.navigate_to_register(driver)
+            register.input_register_data(driver,"not_registered_id")
+            register.find_element(RegisterLocator.EMAIL_AUTH_POPUP)
+            email_data = register.check_email_auth("not_registered_id")
+            content = email_data["content"]
+            register.execute_email_verification(content)
+        except Exception as e:
+            register.handle_exception(request, e)
+        try:
+            from src.utils.helpers import login
+            import os
+            package_name = os.getenv("PACKAGE_NAME")
+            driver.terminate_app(package_name)
+            driver.activate_app(package_name)
+            login(driver, not_registered_id["email_id"] + "@gmail.com", not_registered_id["password"])
+        finally:
+            register.delete_ID(driver,"not_registered_id")
+        
+# 용도 : 회원가입 후 계정삭제용
+#     def test_id_remover(self,driver:AppiumWebDriver, request):
+#             try:
+#                 import os
+#                 from src.utils.helpers import login
+#                 package_name = os.getenv("PACKAGE_NAME")
+#                 driver.terminate_app(package_name)
+#                 driver.activate_app(package_name)
+#                 login(driver, not_registered_id["email_id"] + "@gmail.com", not_registered_id["password"])
+#                 register = Register(driver)
+#                 register.delete_ID(driver,"not_registered_id")
+#             except Exception as e:
+#                 register.handle_exception(request, e)
