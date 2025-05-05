@@ -40,7 +40,7 @@
 
 ## 🛠 사용 기술
 - **테스트 자동화**: Appium, Python, Pytest
-- **CI/CD**: Jenkins
+- **CI**: Jenkins
 
 ## ⚙️ 환경 설정
 📁 `.env` 예시 (`src/config/.env`)
