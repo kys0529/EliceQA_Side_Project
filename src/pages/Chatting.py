@@ -9,9 +9,6 @@ from appium.webdriver.common.appiumby import AppiumBy
 from utils.locators.ChattingLocator import ChattingTabLocator, ChatRoomLocator, BottomSheetLocators
 from src.pages.BasePage import BasePage  # 명시적으로 클래스 임포트
 
-# 스와이프 관련 임포트
-# from appium.webdriver.common.pointer_input import PointerInput
-# from selenium.webdriver.common.actions import ActionBuilder
 
 class Chatting(BasePage):
     def __init__(self, driver, page_name="Chatting"): # page_name 인자 전달
@@ -150,7 +147,9 @@ class Chatting(BasePage):
 
 
 
-
+# 스와이프 관련 임포트
+# from appium.webdriver.common.pointer_input import PointerInput
+# from selenium.webdriver.common.actions import ActionBuilder
 
     #스와이프 관련 함수.. 임포트가 안돼서 작동안함..
     # def swipe_left(self, element):
