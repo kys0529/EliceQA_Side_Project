@@ -5,6 +5,7 @@ from src.pages.Home import Home
 from src.utils.locators import HomeLocator
 from src.utils.locators.TravelProductLocator import TravelProductListLocator, TravelProductDetailLocator
 from src.utils.locators.MyPageLocator import MypageProfile
+from src.resources.testdata import HomeTestData
 
 @pytest.mark.done
 @pytest.mark.usefixtures("login_driver")
@@ -119,12 +120,7 @@ class TestHP05:
             home.save_screenshot(request.node.name)
             raise
 
-    # TODO: test_hp_05_03(인기 관광지 혼잡도 새로고침)은 추후 구현
-
-    @pytest.mark.parametrize("expected_regions", [
-        ["서울", "부산", "대구", "인천", "광주", "대전", "울산", "경기", "강원", "제주"]
-    ])
-    def test_hp_05_04(self, login_driver: WebDriver, expected_regions, request): # 인기 관광지 혼잡도의 지역 필터 중 '전체' 필터 확인
+    def test_hp_05_04(self, login_driver: WebDriver, request): # 인기 관광지 혼잡도의 지역 필터 중 '전체' 필터 확인
         try:
             home = Home(login_driver)
             home.wait_until_weather_widget_loaded()
@@ -133,7 +129,7 @@ class TestHP05:
             for i in range(3):
                 first_result_desc = home.get_attribute(HomeLocator.CONGESTION_FIRST_RESULT, "content-desc")
                 home.swipe_element(scroll_element, "left", 0.3)
-                assert any(region in first_result_desc for region in expected_regions)
+                assert any(region in first_result_desc for region in HomeTestData.expected_regions)
 
             home.logger.info("인기 관광지 혼잡도의 지역 필터 중 '전체' 필터 확인")
         except Exception as e:
@@ -141,18 +137,7 @@ class TestHP05:
             home.save_screenshot(request.node.name)
             raise
 
-    @pytest.mark.parametrize("locator, region_name", [ 
-        (HomeLocator.CONGESTION_SEOUL_BTN, "서울"), # test_hp_05_05
-        (HomeLocator.CONGESTION_BUSAN_BTN, "부산"), # test_hp_05_06
-        (HomeLocator.CONGESTION_DAEGU_BTN, "대구"), # test_hp_05_07
-        (HomeLocator.CONGESTION_INCHEON_BTN, "인천"), # test_hp_05_08
-        (HomeLocator.CONGESTION_GWANGJU_BTN, "광주"), # test_hp_05_09
-        (HomeLocator.CONGESTION_DAEJEON_BTN, "대전"), # test_hp_05_10
-        (HomeLocator.CONGESTION_ULSAN_BTN, "울산"), # test_hp_05_11
-        (HomeLocator.CONGESTION_GYEONGGI_BTN, "경기"), # test_hp_05_12
-        (HomeLocator.CONGESTION_GANGWON_BTN, "강원"), # test_hp_05_13
-        (HomeLocator.CONGESTION_JEJU_BTN, "제주") # test_hp_05_14
-    ])
+    @pytest.mark.parametrize("locator, region_name", HomeTestData.locator__region_name)
     def test_hp_05_05(self, login_driver: WebDriver, locator, region_name, request): # 인기 관광지 혼잡도의 지역 필터 중 '서울/부산/대구/인천/광주/대전/울산/경기/강원/제주' 필터 확인
         try:
             home = Home(login_driver)
@@ -283,12 +268,7 @@ class TestHP12:
 @pytest.mark.done
 @pytest.mark.usefixtures("login_driver")
 class TestHP13:
-    @pytest.mark.parametrize("city, district, filter, expected_city, expected_district, expected_filter", [
-        (HomeLocator.REGION_TOUR_CITY_DAEGU, HomeLocator.REGION_TOUR_DISTRICT_BUKGU, HomeLocator.REGION_TOUR_ALL_BTN, "대구", "북구", "전체"), # test_hp_13_02
-        (HomeLocator.REGION_TOUR_CITY_DAEGU, HomeLocator.REGION_TOUR_DISTRICT_BUKGU, HomeLocator.REGION_TOUR_ATTRACTION_BTN, "대구", "북구", "관광지"), # test_hp_13_03
-        (HomeLocator.REGION_TOUR_CITY_DAEGU, HomeLocator.REGION_TOUR_DISTRICT_BUKGU, HomeLocator.REGION_TOUR_FOOD_BTN, "대구", "북구", "음식"), # test_hp_13_04
-        (HomeLocator.REGION_TOUR_CITY_DAEGU, HomeLocator.REGION_TOUR_DISTRICT_BUKGU, HomeLocator.REGION_TOUR_STAY_BTN, "대구", "북구", "숙박") # test_hp_13_05
-    ])
+    @pytest.mark.parametrize("city, district, filter, expected_city, expected_district, expected_filter", HomeTestData.city__district__filter__expected_values)
     def test_hp_13_02(self, login_driver: WebDriver, city, district, filter, expected_city, expected_district, expected_filter, request): # 선택된 시/도, 시/군/구, 장소 유형과 관련된 장소 리스트 노출 확인
         try:
             home = Home(login_driver)
@@ -304,7 +284,7 @@ class TestHP13:
                 location, type = home.get_region_tour_result_info(HomeLocator.REGION_TOUR_FIRST_RESULT)
                 assert expected_city in location and expected_district in location and type in expected_filter
             else:
-                expected_types = ["관광지", "음식", "숙박"]
+                expected_types = HomeTestData.expected_types
                 scroll_element = home.find_element(HomeLocator.REGION_TOUR_RESULTS)
                 for i in range(3):
                     location, type = home.get_region_tour_result_info(HomeLocator.REGION_TOUR_FIRST_RESULT)
@@ -320,9 +300,7 @@ class TestHP13:
 @pytest.mark.done
 @pytest.mark.usefixtures("login_driver")
 class TestHP14:
-    @pytest.mark.parametrize("city, district, filter", [
-        (HomeLocator.REGION_TOUR_CITY_DAEGU, HomeLocator.REGION_TOUR_DISTRICT_BUKGU, HomeLocator.REGION_TOUR_ALL_BTN), 
-    ])
+    @pytest.mark.parametrize("city, district, filter", HomeTestData.city__district__filter)
     def test_hp_14_01(self, login_driver: WebDriver, city, district, filter, request): # 장소 리스트 중 가장 상단에 위치한 장소 선택 시, 네이버 지도로 이동
         try:
             home = Home(login_driver)
@@ -431,7 +409,7 @@ class TestHP16:
             home.save_screenshot(request.node.name)
             raise
     
-    @pytest.mark.parametrize("comment", ["이것은 댓글 테스트", "댓글 작성 테스트"])
+    @pytest.mark.parametrize("comment", HomeTestData.comment)
     def test_hp_16_05(self, login_driver: WebDriver, comment, request): # 입력한 댓글이 댓글 리스트에 정상적으로 추가되는지 확인
         try:
             home = Home(login_driver)
@@ -554,9 +532,7 @@ class TestHP18:
             home.save_screenshot(request.node.name)
             raise
 
-    @pytest.mark.parametrize("location, description", [
-        ("대구 찜갈비", "찜갈비 존맛탱") 
-    ])
+    @pytest.mark.parametrize("location, description", HomeTestData.location__description)
     def test_hp_18_03(self, login_driver: WebDriver, location, description, request): # 이미지도 필수 항목이므로, [공유] 버튼이 정상 동작하지 않음
         try:
             home = Home(login_driver)
@@ -577,9 +553,7 @@ class TestHP18:
             home.save_screenshot(request.node.name)
             raise
 
-    @pytest.mark.parametrize("location, description", [
-        ("대구 루시드 카페", "푸딩 빙수 존맛탱")
-    ])
+    @pytest.mark.parametrize("location, description", HomeTestData.location__description)
     def test_hp_18_04(self, login_driver: WebDriver, location, description, request): # 작성한 게시글이 피드 글 리스트에 정상적으로 추가됨
         try:
             home = Home(login_driver)
@@ -620,11 +594,7 @@ class TestHP19:
             home.save_screenshot(request.node.name)
             raise
 
-    @pytest.mark.parametrize("keyword, content", [
-        ("위치", "대구 루시드 카페"), # test_hp_19_02
-        ("내용", "푸딩 빙수 존맛탱"), # test_hp_19_03
-        ("패키지", "알찬") # test_hp_19_04
-    ])
+    @pytest.mark.parametrize("keyword, content", HomeTestData.keyword__content)
     def test_hp_19_02(self, login_driver: WebDriver, keyword, content, request): # 입력한 키워드와 관련된 글이 검색 영역에 정상적으로 노출
         try:
             home = Home(login_driver)
