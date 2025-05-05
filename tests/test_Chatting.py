@@ -3,7 +3,7 @@ from appium.webdriver.webdriver import WebDriver
 from selenium.common.exceptions import TimeoutException
 from src.pages.Chatting import Chatting
 from utils.locators.ChattingLocator import ChattingTabLocator, ChatRoomLocator, BottomSheetLocators
-from resources.testdata.test_data import chat_users, data_package, input_text, data_location
+from resources.testdata.ChattingTestData import chat_users, data_package, input_text, data_location
 import time
 
 @pytest.mark.done
