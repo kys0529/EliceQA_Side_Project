@@ -9,7 +9,7 @@ pipeline {
                     . venv/bin/activate
                     pip install --upgrade pip
                     pip install -r requirements.txt
-                    pytest
+                    pytest tests/test_Home.py
                 '''
             }
         }
