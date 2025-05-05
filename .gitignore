@@ -177,6 +177,3 @@ cython_debug/
 
 # All test reports (logs and screenshots)
 reports/
-
-# Test Data
-src/resources/testdata/
