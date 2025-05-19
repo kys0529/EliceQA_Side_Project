@@ -7,7 +7,7 @@ from src.utils.locators.TravelProductLocator import TravelProductListLocator, Tr
 from src.utils.locators.MyPageLocator import MypageProfile
 from src.resources.testdata import HomeTestData
 
-@pytest.mark.done 
+@pytest.mark.done
 @pytest.mark.usefixtures("login_driver")
 class TestHP01:
     def test_hp_01_01(self, login_driver: WebDriver, request): # 로그인 시, 홈 탭 정상 진입 및 주요 UI 노출 확인
